@@ -14,11 +14,6 @@ enum class PrepareResult {
     PREPARE_UNRECOGNIZED_STATEMENT 
 };
 
-enum class StatementType { 
-    STATEMENT_INSERT, 
-    STATEMENT_SELECT 
-};
-
 class InputBuffer {
 private: 
     std::string buffer;
@@ -36,20 +31,29 @@ public:
     }
 };
 
-class Statement {
+class StatementProcessor {
+private:
+    std::unordered_map<std::string, std::function<PrepareResult()>> statements;
+    
 public:
-    StatementType type;
-    Statement(StatementType t) : type(t) {}
+    StatementProcessor() {
+        statements["insert"] = []() {
+            std::cout << "This is where we would do an insert.\n";
+            return PrepareResult::PREPARE_SUCCESS;
+        };
+        
+        statements["select"] = []() {
+            std::cout << "This is where we would do a select.\n";
+            return PrepareResult::PREPARE_SUCCESS;
+        };
+    }
 
-    void execute() const {
-        switch (type) {
-            case StatementType::STATEMENT_INSERT:
-                std::cout << "This is where we would do an insert.\n";
-                break;
-            case StatementType::STATEMENT_SELECT:
-                std::cout << "This is where we would do a select.\n";
-                break;
+    PrepareResult execute(const std::string& statement) {
+        auto it = statements.find(statement);
+        if (it != statements.end()) {
+            return it->second();
         }
+        return PrepareResult::PREPARE_UNRECOGNIZED_STATEMENT;
     }
 };
 
@@ -84,21 +88,7 @@ public:
     }
 };
 
-class StatementProcessor {
-public:
-    PrepareResult prepareStatement(const std::string& input, Statement& statement) {
-        // Simple parsing - check first word
-        if (input.substr(0, 6) == "insert") {
-            statement = Statement(StatementType::STATEMENT_INSERT);
-            return PrepareResult::PREPARE_SUCCESS;
-        }
-        if (input == "select") {
-            statement = Statement(StatementType::STATEMENT_SELECT);
-            return PrepareResult::PREPARE_SUCCESS;
-        }
-        return PrepareResult::PREPARE_UNRECOGNIZED_STATEMENT;
-    }
-};
+
 
 void printPrompt() { 
     std::cout << "db > "; 
@@ -106,34 +96,34 @@ void printPrompt() {
 
 int main() {
     InputBuffer inputBuffer;
-    MetaCommandProcessor metaProcessor;  // Create once, reuse
-    StatementProcessor statementProcessor;  // Create once, reuse
+    MetaCommandProcessor metaProcessor;
+    StatementProcessor statementProcessor;
     
     while (true) {
         printPrompt();
         inputBuffer.readInput();
         
         if (inputBuffer.getBuffer()[0] == '.') {
-            // Handle meta commands
             MetaCommandResult result = metaProcessor.execute(inputBuffer.getBuffer());
-            if (result == MetaCommandResult::META_COMMAND_UNRECOGNIZED_COMMAND) {
-                std::cout << "Unrecognized command '" << inputBuffer.getBuffer() << "'\n";
+            switch (result) {
+                case MetaCommandResult::META_COMMAND_SUCCESS:
+                    std::cout << "Executed.\n";
+                    break;      
+                case MetaCommandResult::META_COMMAND_UNRECOGNIZED_COMMAND:
+                    std::cout << "Unrecognized command at start of '" << inputBuffer.getBuffer() << "'.\n";
+                    continue;
             }
-            continue;
         }
         
-        // Handle SQL statements
-        Statement statement(StatementType::STATEMENT_SELECT); // Default
-        PrepareResult result = statementProcessor.prepareStatement(inputBuffer.getBuffer(), statement);
-        
-        switch (result) {
+
+        PrepareResult result = statementProcessor.execute(inputBuffer.getBuffer());
+        switch (result) {      
             case PrepareResult::PREPARE_SUCCESS:
-                statement.execute();
                 std::cout << "Executed.\n";
-                break;
+                break;      
             case PrepareResult::PREPARE_UNRECOGNIZED_STATEMENT:
                 std::cout << "Unrecognized keyword at start of '" << inputBuffer.getBuffer() << "'.\n";
-                break;
+                continue;
         }
     }
     
