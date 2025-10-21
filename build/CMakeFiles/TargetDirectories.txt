@@ -1,0 +1,3 @@
+/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles/sql_liter.dir
+/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles/edit_cache.dir
+/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles/rebuild_cache.dir
