@@ -86,129 +86,18 @@ CMakeFiles/sql_liter.dir/src/main.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/main.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/main.cpp" -o CMakeFiles/sql_liter.dir/src/main.cpp.s
 
-CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/tokenizer.cpp
-CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o -MF CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o.d -o CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/tokenizer.cpp"
-
-CMakeFiles/sql_liter.dir/src/tokenizer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/tokenizer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/tokenizer.cpp" > CMakeFiles/sql_liter.dir/src/tokenizer.cpp.i
-
-CMakeFiles/sql_liter.dir/src/tokenizer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/tokenizer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/tokenizer.cpp" -o CMakeFiles/sql_liter.dir/src/tokenizer.cpp.s
-
-CMakeFiles/sql_liter.dir/src/row.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/row.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/row.cpp
-CMakeFiles/sql_liter.dir/src/row.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/sql_liter.dir/src/row.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/row.cpp.o -MF CMakeFiles/sql_liter.dir/src/row.cpp.o.d -o CMakeFiles/sql_liter.dir/src/row.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/row.cpp"
-
-CMakeFiles/sql_liter.dir/src/row.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/row.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/row.cpp" > CMakeFiles/sql_liter.dir/src/row.cpp.i
-
-CMakeFiles/sql_liter.dir/src/row.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/row.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/row.cpp" -o CMakeFiles/sql_liter.dir/src/row.cpp.s
-
-CMakeFiles/sql_liter.dir/src/table.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/table.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/table.cpp
-CMakeFiles/sql_liter.dir/src/table.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/sql_liter.dir/src/table.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/table.cpp.o -MF CMakeFiles/sql_liter.dir/src/table.cpp.o.d -o CMakeFiles/sql_liter.dir/src/table.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/table.cpp"
-
-CMakeFiles/sql_liter.dir/src/table.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/table.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/table.cpp" > CMakeFiles/sql_liter.dir/src/table.cpp.i
-
-CMakeFiles/sql_liter.dir/src/table.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/table.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/table.cpp" -o CMakeFiles/sql_liter.dir/src/table.cpp.s
-
-CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/input_buffer.cpp
-CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o -MF CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o.d -o CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/input_buffer.cpp"
-
-CMakeFiles/sql_liter.dir/src/input_buffer.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/input_buffer.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/input_buffer.cpp" > CMakeFiles/sql_liter.dir/src/input_buffer.cpp.i
-
-CMakeFiles/sql_liter.dir/src/input_buffer.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/input_buffer.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/input_buffer.cpp" -o CMakeFiles/sql_liter.dir/src/input_buffer.cpp.s
-
-CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/statement_processor.cpp
-CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o -MF CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o.d -o CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/statement_processor.cpp"
-
-CMakeFiles/sql_liter.dir/src/statement_processor.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/statement_processor.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/statement_processor.cpp" > CMakeFiles/sql_liter.dir/src/statement_processor.cpp.i
-
-CMakeFiles/sql_liter.dir/src/statement_processor.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/statement_processor.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/statement_processor.cpp" -o CMakeFiles/sql_liter.dir/src/statement_processor.cpp.s
-
-CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/meta_command_processor.cpp
-CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o -MF CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o.d -o CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/meta_command_processor.cpp"
-
-CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/meta_command_processor.cpp" > CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.i
-
-CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/meta_command_processor.cpp" -o CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.s
-
-CMakeFiles/sql_liter.dir/src/utils.cpp.o: CMakeFiles/sql_liter.dir/flags.make
-CMakeFiles/sql_liter.dir/src/utils.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/utils.cpp
-CMakeFiles/sql_liter.dir/src/utils.cpp.o: CMakeFiles/sql_liter.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/sql_liter.dir/src/utils.cpp.o"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter.dir/src/utils.cpp.o -MF CMakeFiles/sql_liter.dir/src/utils.cpp.o.d -o CMakeFiles/sql_liter.dir/src/utils.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/utils.cpp"
-
-CMakeFiles/sql_liter.dir/src/utils.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter.dir/src/utils.cpp.i"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/utils.cpp" > CMakeFiles/sql_liter.dir/src/utils.cpp.i
-
-CMakeFiles/sql_liter.dir/src/utils.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter.dir/src/utils.cpp.s"
-	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/utils.cpp" -o CMakeFiles/sql_liter.dir/src/utils.cpp.s
-
 # Object files for target sql_liter
 sql_liter_OBJECTS = \
-"CMakeFiles/sql_liter.dir/src/main.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/row.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/table.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o" \
-"CMakeFiles/sql_liter.dir/src/utils.cpp.o"
+"CMakeFiles/sql_liter.dir/src/main.cpp.o"
 
 # External object files for target sql_liter
 sql_liter_EXTERNAL_OBJECTS =
 
 sql_liter: CMakeFiles/sql_liter.dir/src/main.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/row.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/table.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o
-sql_liter: CMakeFiles/sql_liter.dir/src/utils.cpp.o
 sql_liter: CMakeFiles/sql_liter.dir/build.make
+sql_liter: libsql_liter_lib.a
 sql_liter: CMakeFiles/sql_liter.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable sql_liter"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable sql_liter"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sql_liter.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

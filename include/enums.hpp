@@ -1,0 +1,19 @@
+#pragma once
+
+enum class MetaCommandResult {
+    META_COMMAND_SUCCESS,
+    META_COMMAND_UNRECOGNIZED_COMMAND
+};
+
+enum class PrepareResult { 
+    PREPARE_SUCCESS, 
+    PREPARE_UNRECOGNIZED_STATEMENT,
+    PREPARE_SYNTAX_ERROR,
+    PREPARE_INTERNAL_FAILURE
+};
+
+enum class ExecuteResult { 
+    EXECUTE_SUCCESS, 
+    EXECUTE_TABLE_FULL,
+    EXECUTE_FAILURE
+};

@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/b
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/opt/homebrew/bin/ctest $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -84,6 +94,51 @@ rebuild_cache:
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"gmock\" \"gtest\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	/opt/homebrew/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	/opt/homebrew/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -117,6 +172,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named sql_liter_lib
+
+# Build rule for target.
+sql_liter_lib: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sql_liter_lib
+.PHONY : sql_liter_lib
+
+# fast build rule for target.
+sql_liter_lib/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/build
+.PHONY : sql_liter_lib/fast
+
+#=============================================================================
 # Target rules for targets named sql_liter
 
 # Build rule for target.
@@ -129,12 +197,77 @@ sql_liter/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/build
 .PHONY : sql_liter/fast
 
+#=============================================================================
+# Target rules for targets named sql_liter_tests
+
+# Build rule for target.
+sql_liter_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 sql_liter_tests
+.PHONY : sql_liter_tests
+
+# fast build rule for target.
+sql_liter_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/build
+.PHONY : sql_liter_tests/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build.make _deps/googletest-build/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build.make _deps/googletest-build/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
 src/input_buffer.o: src/input_buffer.cpp.o
 .PHONY : src/input_buffer.o
 
 # target to build an object file
 src/input_buffer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/input_buffer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.o
 .PHONY : src/input_buffer.cpp.o
 
 src/input_buffer.i: src/input_buffer.cpp.i
@@ -142,7 +275,7 @@ src/input_buffer.i: src/input_buffer.cpp.i
 
 # target to preprocess a source file
 src/input_buffer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/input_buffer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.i
 .PHONY : src/input_buffer.cpp.i
 
 src/input_buffer.s: src/input_buffer.cpp.s
@@ -150,7 +283,7 @@ src/input_buffer.s: src/input_buffer.cpp.s
 
 # target to generate assembly for a file
 src/input_buffer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/input_buffer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.s
 .PHONY : src/input_buffer.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -182,7 +315,7 @@ src/meta_command_processor.o: src/meta_command_processor.cpp.o
 
 # target to build an object file
 src/meta_command_processor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o
 .PHONY : src/meta_command_processor.cpp.o
 
 src/meta_command_processor.i: src/meta_command_processor.cpp.i
@@ -190,7 +323,7 @@ src/meta_command_processor.i: src/meta_command_processor.cpp.i
 
 # target to preprocess a source file
 src/meta_command_processor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.i
 .PHONY : src/meta_command_processor.cpp.i
 
 src/meta_command_processor.s: src/meta_command_processor.cpp.s
@@ -198,7 +331,7 @@ src/meta_command_processor.s: src/meta_command_processor.cpp.s
 
 # target to generate assembly for a file
 src/meta_command_processor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/meta_command_processor.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.s
 .PHONY : src/meta_command_processor.cpp.s
 
 src/row.o: src/row.cpp.o
@@ -206,7 +339,7 @@ src/row.o: src/row.cpp.o
 
 # target to build an object file
 src/row.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/row.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/row.cpp.o
 .PHONY : src/row.cpp.o
 
 src/row.i: src/row.cpp.i
@@ -214,7 +347,7 @@ src/row.i: src/row.cpp.i
 
 # target to preprocess a source file
 src/row.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/row.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/row.cpp.i
 .PHONY : src/row.cpp.i
 
 src/row.s: src/row.cpp.s
@@ -222,7 +355,7 @@ src/row.s: src/row.cpp.s
 
 # target to generate assembly for a file
 src/row.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/row.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/row.cpp.s
 .PHONY : src/row.cpp.s
 
 src/statement_processor.o: src/statement_processor.cpp.o
@@ -230,7 +363,7 @@ src/statement_processor.o: src/statement_processor.cpp.o
 
 # target to build an object file
 src/statement_processor.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/statement_processor.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.o
 .PHONY : src/statement_processor.cpp.o
 
 src/statement_processor.i: src/statement_processor.cpp.i
@@ -238,7 +371,7 @@ src/statement_processor.i: src/statement_processor.cpp.i
 
 # target to preprocess a source file
 src/statement_processor.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/statement_processor.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.i
 .PHONY : src/statement_processor.cpp.i
 
 src/statement_processor.s: src/statement_processor.cpp.s
@@ -246,7 +379,7 @@ src/statement_processor.s: src/statement_processor.cpp.s
 
 # target to generate assembly for a file
 src/statement_processor.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/statement_processor.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.s
 .PHONY : src/statement_processor.cpp.s
 
 src/table.o: src/table.cpp.o
@@ -254,7 +387,7 @@ src/table.o: src/table.cpp.o
 
 # target to build an object file
 src/table.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/table.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/table.cpp.o
 .PHONY : src/table.cpp.o
 
 src/table.i: src/table.cpp.i
@@ -262,7 +395,7 @@ src/table.i: src/table.cpp.i
 
 # target to preprocess a source file
 src/table.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/table.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/table.cpp.i
 .PHONY : src/table.cpp.i
 
 src/table.s: src/table.cpp.s
@@ -270,7 +403,7 @@ src/table.s: src/table.cpp.s
 
 # target to generate assembly for a file
 src/table.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/table.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/table.cpp.s
 .PHONY : src/table.cpp.s
 
 src/tokenizer.o: src/tokenizer.cpp.o
@@ -278,7 +411,7 @@ src/tokenizer.o: src/tokenizer.cpp.o
 
 # target to build an object file
 src/tokenizer.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/tokenizer.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/tokenizer.cpp.o
 .PHONY : src/tokenizer.cpp.o
 
 src/tokenizer.i: src/tokenizer.cpp.i
@@ -286,7 +419,7 @@ src/tokenizer.i: src/tokenizer.cpp.i
 
 # target to preprocess a source file
 src/tokenizer.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/tokenizer.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/tokenizer.cpp.i
 .PHONY : src/tokenizer.cpp.i
 
 src/tokenizer.s: src/tokenizer.cpp.s
@@ -294,7 +427,7 @@ src/tokenizer.s: src/tokenizer.cpp.s
 
 # target to generate assembly for a file
 src/tokenizer.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/tokenizer.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/tokenizer.cpp.s
 .PHONY : src/tokenizer.cpp.s
 
 src/utils.o: src/utils.cpp.o
@@ -302,7 +435,7 @@ src/utils.o: src/utils.cpp.o
 
 # target to build an object file
 src/utils.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/utils.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o
 .PHONY : src/utils.cpp.o
 
 src/utils.i: src/utils.cpp.i
@@ -310,7 +443,7 @@ src/utils.i: src/utils.cpp.i
 
 # target to preprocess a source file
 src/utils.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/utils.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/utils.cpp.i
 .PHONY : src/utils.cpp.i
 
 src/utils.s: src/utils.cpp.s
@@ -318,8 +451,104 @@ src/utils.s: src/utils.cpp.s
 
 # target to generate assembly for a file
 src/utils.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter.dir/build.make CMakeFiles/sql_liter.dir/src/utils.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/utils.cpp.s
 .PHONY : src/utils.cpp.s
+
+tests/test_input_integration.o: tests/test_input_integration.cpp.o
+.PHONY : tests/test_input_integration.o
+
+# target to build an object file
+tests/test_input_integration.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.o
+.PHONY : tests/test_input_integration.cpp.o
+
+tests/test_input_integration.i: tests/test_input_integration.cpp.i
+.PHONY : tests/test_input_integration.i
+
+# target to preprocess a source file
+tests/test_input_integration.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.i
+.PHONY : tests/test_input_integration.cpp.i
+
+tests/test_input_integration.s: tests/test_input_integration.cpp.s
+.PHONY : tests/test_input_integration.s
+
+# target to generate assembly for a file
+tests/test_input_integration.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.s
+.PHONY : tests/test_input_integration.cpp.s
+
+tests/test_row.o: tests/test_row.cpp.o
+.PHONY : tests/test_row.o
+
+# target to build an object file
+tests/test_row.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.o
+.PHONY : tests/test_row.cpp.o
+
+tests/test_row.i: tests/test_row.cpp.i
+.PHONY : tests/test_row.i
+
+# target to preprocess a source file
+tests/test_row.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.i
+.PHONY : tests/test_row.cpp.i
+
+tests/test_row.s: tests/test_row.cpp.s
+.PHONY : tests/test_row.s
+
+# target to generate assembly for a file
+tests/test_row.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.s
+.PHONY : tests/test_row.cpp.s
+
+tests/test_table.o: tests/test_table.cpp.o
+.PHONY : tests/test_table.o
+
+# target to build an object file
+tests/test_table.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.o
+.PHONY : tests/test_table.cpp.o
+
+tests/test_table.i: tests/test_table.cpp.i
+.PHONY : tests/test_table.i
+
+# target to preprocess a source file
+tests/test_table.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.i
+.PHONY : tests/test_table.cpp.i
+
+tests/test_table.s: tests/test_table.cpp.s
+.PHONY : tests/test_table.s
+
+# target to generate assembly for a file
+tests/test_table.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.s
+.PHONY : tests/test_table.cpp.s
+
+tests/test_tokenizer.o: tests/test_tokenizer.cpp.o
+.PHONY : tests/test_tokenizer.o
+
+# target to build an object file
+tests/test_tokenizer.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_tokenizer.cpp.o
+.PHONY : tests/test_tokenizer.cpp.o
+
+tests/test_tokenizer.i: tests/test_tokenizer.cpp.i
+.PHONY : tests/test_tokenizer.i
+
+# target to preprocess a source file
+tests/test_tokenizer.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_tokenizer.cpp.i
+.PHONY : tests/test_tokenizer.cpp.i
+
+tests/test_tokenizer.s: tests/test_tokenizer.cpp.s
+.PHONY : tests/test_tokenizer.s
+
+# target to generate assembly for a file
+tests/test_tokenizer.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_tokenizer.cpp.s
+.PHONY : tests/test_tokenizer.cpp.s
 
 # Help Target
 help:
@@ -328,8 +557,19 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
 	@echo "... sql_liter"
+	@echo "... sql_liter_lib"
+	@echo "... sql_liter_tests"
 	@echo "... src/input_buffer.o"
 	@echo "... src/input_buffer.i"
 	@echo "... src/input_buffer.s"
@@ -354,6 +594,18 @@ help:
 	@echo "... src/utils.o"
 	@echo "... src/utils.i"
 	@echo "... src/utils.s"
+	@echo "... tests/test_input_integration.o"
+	@echo "... tests/test_input_integration.i"
+	@echo "... tests/test_input_integration.s"
+	@echo "... tests/test_row.o"
+	@echo "... tests/test_row.i"
+	@echo "... tests/test_row.s"
+	@echo "... tests/test_table.o"
+	@echo "... tests/test_table.i"
+	@echo "... tests/test_table.s"
+	@echo "... tests/test_tokenizer.o"
+	@echo "... tests/test_tokenizer.i"
+	@echo "... tests/test_tokenizer.s"
 .PHONY : help
 
 
