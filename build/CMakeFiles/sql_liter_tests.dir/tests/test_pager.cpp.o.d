@@ -1,5 +1,5 @@
-CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.o: \
-  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/tests/test_table.cpp \
+CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o: \
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/tests/test_pager.cpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/build/_deps/googletest-src/googletest/include/gtest/gtest.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cstddef \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__config \

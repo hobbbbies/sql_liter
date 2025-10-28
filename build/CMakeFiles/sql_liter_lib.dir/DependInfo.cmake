@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/input_buffer.cpp" "CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.o" "gcc" "CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.o.d"
   "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/meta_command_processor.cpp" "CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o" "gcc" "CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o.d"
+  "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/pager.cpp" "CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o" "gcc" "CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o.d"
   "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/row.cpp" "CMakeFiles/sql_liter_lib.dir/src/row.cpp.o" "gcc" "CMakeFiles/sql_liter_lib.dir/src/row.cpp.o.d"
   "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/statement_processor.cpp" "CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.o" "gcc" "CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.o.d"
   "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/table.cpp" "CMakeFiles/sql_liter_lib.dir/src/table.cpp.o" "gcc" "CMakeFiles/sql_liter_lib.dir/src/table.cpp.o.d"

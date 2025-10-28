@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.o.d"
   "CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o"
   "CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o.d"
+  "CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o"
+  "CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o.d"
   "CMakeFiles/sql_liter_lib.dir/src/row.cpp.o"
   "CMakeFiles/sql_liter_lib.dir/src/row.cpp.o.d"
   "CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.o"

@@ -170,6 +170,20 @@ CMakeFiles/sql_liter_lib.dir/src/utils.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter_lib.dir/src/utils.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/utils.cpp" -o CMakeFiles/sql_liter_lib.dir/src/utils.cpp.s
 
+CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o: CMakeFiles/sql_liter_lib.dir/flags.make
+CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/pager.cpp
+CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o: CMakeFiles/sql_liter_lib.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o -MF CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o.d -o CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/pager.cpp"
+
+CMakeFiles/sql_liter_lib.dir/src/pager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter_lib.dir/src/pager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/pager.cpp" > CMakeFiles/sql_liter_lib.dir/src/pager.cpp.i
+
+CMakeFiles/sql_liter_lib.dir/src/pager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter_lib.dir/src/pager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/src/pager.cpp" -o CMakeFiles/sql_liter_lib.dir/src/pager.cpp.s
+
 # Object files for target sql_liter_lib
 sql_liter_lib_OBJECTS = \
 "CMakeFiles/sql_liter_lib.dir/src/tokenizer.cpp.o" \
@@ -178,7 +192,8 @@ sql_liter_lib_OBJECTS = \
 "CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.o" \
 "CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.o" \
 "CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o" \
-"CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o"
+"CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o" \
+"CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o"
 
 # External object files for target sql_liter_lib
 sql_liter_lib_EXTERNAL_OBJECTS =
@@ -190,9 +205,10 @@ libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/src/input_buffer.cpp.o
 libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/src/statement_processor.cpp.o
 libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o
 libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o
+libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o
 libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/build.make
 libsql_liter_lib.a: CMakeFiles/sql_liter_lib.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Linking CXX static library libsql_liter_lib.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX static library libsql_liter_lib.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/sql_liter_lib.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sql_liter_lib.dir/link.txt --verbose=$(VERBOSE)
 

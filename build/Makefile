@@ -334,6 +334,30 @@ src/meta_command_processor.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.s
 .PHONY : src/meta_command_processor.cpp.s
 
+src/pager.o: src/pager.cpp.o
+.PHONY : src/pager.o
+
+# target to build an object file
+src/pager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o
+.PHONY : src/pager.cpp.o
+
+src/pager.i: src/pager.cpp.i
+.PHONY : src/pager.i
+
+# target to preprocess a source file
+src/pager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/pager.cpp.i
+.PHONY : src/pager.cpp.i
+
+src/pager.s: src/pager.cpp.s
+.PHONY : src/pager.s
+
+# target to generate assembly for a file
+src/pager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_lib.dir/build.make CMakeFiles/sql_liter_lib.dir/src/pager.cpp.s
+.PHONY : src/pager.cpp.s
+
 src/row.o: src/row.cpp.o
 .PHONY : src/row.o
 
@@ -478,6 +502,30 @@ tests/test_input_integration.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.s
 .PHONY : tests/test_input_integration.cpp.s
 
+tests/test_pager.o: tests/test_pager.cpp.o
+.PHONY : tests/test_pager.o
+
+# target to build an object file
+tests/test_pager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o
+.PHONY : tests/test_pager.cpp.o
+
+tests/test_pager.i: tests/test_pager.cpp.i
+.PHONY : tests/test_pager.i
+
+# target to preprocess a source file
+tests/test_pager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.i
+.PHONY : tests/test_pager.cpp.i
+
+tests/test_pager.s: tests/test_pager.cpp.s
+.PHONY : tests/test_pager.s
+
+# target to generate assembly for a file
+tests/test_pager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/sql_liter_tests.dir/build.make CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.s
+.PHONY : tests/test_pager.cpp.s
+
 tests/test_row.o: tests/test_row.cpp.o
 .PHONY : tests/test_row.o
 
@@ -579,6 +627,9 @@ help:
 	@echo "... src/meta_command_processor.o"
 	@echo "... src/meta_command_processor.i"
 	@echo "... src/meta_command_processor.s"
+	@echo "... src/pager.o"
+	@echo "... src/pager.i"
+	@echo "... src/pager.s"
 	@echo "... src/row.o"
 	@echo "... src/row.i"
 	@echo "... src/row.s"
@@ -597,6 +648,9 @@ help:
 	@echo "... tests/test_input_integration.o"
 	@echo "... tests/test_input_integration.i"
 	@echo "... tests/test_input_integration.s"
+	@echo "... tests/test_pager.o"
+	@echo "... tests/test_pager.i"
+	@echo "... tests/test_pager.s"
 	@echo "... tests/test_row.o"
 	@echo "... tests/test_row.i"
 	@echo "... tests/test_row.s"

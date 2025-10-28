@@ -128,12 +128,27 @@ CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/tests/test_input_integration.cpp" -o CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.s
 
+CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o: CMakeFiles/sql_liter_tests.dir/flags.make
+CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/tests/test_pager.cpp
+CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o: CMakeFiles/sql_liter_tests.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o -MF CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o.d -o CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o -c "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/tests/test_pager.cpp"
+
+CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/tests/test_pager.cpp" > CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.i
+
+CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/tests/test_pager.cpp" -o CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.s
+
 # Object files for target sql_liter_tests
 sql_liter_tests_OBJECTS = \
 "CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.o" \
 "CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.o" \
 "CMakeFiles/sql_liter_tests.dir/tests/test_tokenizer.cpp.o" \
-"CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.o"
+"CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.o" \
+"CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o"
 
 # External object files for target sql_liter_tests
 sql_liter_tests_EXTERNAL_OBJECTS =
@@ -142,12 +157,13 @@ sql_liter_tests: CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.o
 sql_liter_tests: CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.o
 sql_liter_tests: CMakeFiles/sql_liter_tests.dir/tests/test_tokenizer.cpp.o
 sql_liter_tests: CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.o
+sql_liter_tests: CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o
 sql_liter_tests: CMakeFiles/sql_liter_tests.dir/build.make
 sql_liter_tests: libsql_liter_lib.a
 sql_liter_tests: lib/libgtest_main.a
 sql_liter_tests: lib/libgtest.a
 sql_liter_tests: CMakeFiles/sql_liter_tests.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Linking CXX executable sql_liter_tests"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir="/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/CMakeFiles" --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX executable sql_liter_tests"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sql_liter_tests.dir/link.txt --verbose=$(VERBOSE)
 	/opt/homebrew/bin/cmake -D TEST_TARGET=sql_liter_tests -D "TEST_EXECUTABLE=/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/sql_liter_tests" -D TEST_EXECUTOR= -D "TEST_WORKING_DIR=/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build" -D TEST_EXTRA_ARGS= -D TEST_PROPERTIES= -D TEST_PREFIX= -D TEST_SUFFIX= -D TEST_FILTER= -D NO_PRETTY_TYPES=FALSE -D NO_PRETTY_VALUES=FALSE -D TEST_LIST=sql_liter_tests_TESTS -D "CTEST_FILE=/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/sql_liter_tests[1]_tests.cmake" -D TEST_DISCOVERY_TIMEOUT=5 -D TEST_DISCOVERY_EXTRA_ARGS= -D TEST_XML_OUTPUT_DIR= -P /opt/homebrew/share/cmake/Modules/GoogleTestAddTests.cmake
 

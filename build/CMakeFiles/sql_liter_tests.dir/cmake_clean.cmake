@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.o"
   "CMakeFiles/sql_liter_tests.dir/tests/test_input_integration.cpp.o.d"
+  "CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o"
+  "CMakeFiles/sql_liter_tests.dir/tests/test_pager.cpp.o.d"
   "CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.o"
   "CMakeFiles/sql_liter_tests.dir/tests/test_row.cpp.o.d"
   "CMakeFiles/sql_liter_tests.dir/tests/test_table.cpp.o"
