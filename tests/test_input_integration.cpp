@@ -10,7 +10,7 @@
 class InputIntegrationTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        table = std::make_unique<Table>();
+        table = std::make_unique<Table>("test.txt");
         processor = std::make_unique<StatementProcessor>(*table);
         meta_processor = std::make_unique<MetaCommandProcessor>();
     }

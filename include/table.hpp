@@ -8,23 +8,22 @@
 #include "enums.hpp"
 #include "row.hpp"
 
+#include "pager.hpp"
+
 class Table {
 private:
     uint32_t num_rows;
-    uint8_t* pages[TABLE_MAX_PAGES];
+    Pager* pager;
 
-    static constexpr uint32_t PAGE_SIZE = 4096;
     static constexpr uint32_t ROWS_PER_PAGE = PAGE_SIZE / Row::getRowSize();
     static constexpr uint32_t TABLE_MAX_ROWS = ROWS_PER_PAGE * TABLE_MAX_PAGES;
 public:
-    Table();
+    Table(std::string filename);
     ~Table();
-
-    void* row_slot(uint32_t row_num);
-
+    
+    uint8_t* row_slot(uint32_t row_num) const;
     uint32_t getNumRows() const { return num_rows; }
     void incrementRows() { ++num_rows; }
-
     void insertRow(const Row& row);
     Row getRow(uint32_t row_num) const;
 

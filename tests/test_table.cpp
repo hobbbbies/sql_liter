@@ -5,7 +5,7 @@
 class TableTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        table = std::make_unique<Table>();
+        table = std::make_unique<Table>("test.txt");
     }
     
     std::unique_ptr<Table> table;

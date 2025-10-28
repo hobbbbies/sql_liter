@@ -17,6 +17,7 @@ set(LIB_SOURCES
     src/statement_processor.cpp
     src/meta_command_processor.cpp
     src/utils.cpp
+    src/pager.cpp
 )
 
 # Create a library for the core functionality
@@ -54,6 +55,7 @@ set(TEST_SOURCES
     tests/test_table.cpp
     tests/test_tokenizer.cpp
     tests/test_input_integration.cpp
+    tests/test_pager.cpp
 )
 
 # Test executable

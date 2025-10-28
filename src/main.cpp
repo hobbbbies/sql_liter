@@ -9,7 +9,7 @@
 int main() {
     InputBuffer inputBuffer;
     MetaCommandProcessor metaProcessor;
-    Table db_table;
+    Table db_table("temp.txt");
     StatementProcessor statementProcessor = StatementProcessor(db_table);
     
     while (true) {

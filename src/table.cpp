@@ -1,34 +1,25 @@
 #include "table.hpp"
-
+#include "pager.hpp"
 #include <cstring>
 #include <stdexcept>
 #include <iostream>
 
-Table::Table() : num_rows(0) {
-    for (int i = 0; i < TABLE_MAX_PAGES; ++i) {
-        pages[i] = nullptr;
-    }
+Table::Table(std::string filename) {
+    pager = new Pager(filename);
+    num_rows = pager->getFileLength() / Row::getRowSize();
 }
 
 Table::~Table() {
-    for (int i = 0; i < TABLE_MAX_PAGES; ++i) {
-        delete[] pages[i];
-    }
+    delete pager;
 }
 
-void* Table::row_slot(uint32_t row_num) {
+// Returns ptr row to serialize; initializes page if needed
+uint8_t* Table::row_slot(uint32_t row_num) const {
     uint32_t page_num = row_num / ROWS_PER_PAGE;
-
     if (page_num >= TABLE_MAX_PAGES) {
         throw std::out_of_range("Page number exceeds maximum pages");
     }
-
-    uint8_t* page = pages[page_num];
-    if (page == nullptr) {
-        page = pages[page_num] = new uint8_t[PAGE_SIZE];
-        std::memset(page, 0, PAGE_SIZE);
-    }
-
+    uint8_t* page = pager->getPage(page_num);
     uint32_t row_offset = row_num % ROWS_PER_PAGE;
     uint32_t byte_offset = row_offset * Row::getRowSize();
     return page + byte_offset;
@@ -36,7 +27,6 @@ void* Table::row_slot(uint32_t row_num) {
 
 void Table::insertRow(const Row& row) {
     if (num_rows == TABLE_MAX_ROWS) { 
-        
         throw std::out_of_range("Table is full");
     }
     void* slot = row_slot(num_rows);
@@ -45,14 +35,8 @@ void Table::insertRow(const Row& row) {
 }
 
 Row Table::getRow(uint32_t row_num) const {
-    if (row_num >= num_rows) {
-        throw std::out_of_range("Row number out of bounds");
-    }
-    uint32_t page_num = row_num / ROWS_PER_PAGE;
-    uint32_t row_offset = row_num % ROWS_PER_PAGE;
-    uint32_t byte_offset = row_offset * Row::getRowSize();
-
-    return Row::deserialize(pages[page_num] + byte_offset);
+    uint8_t* rowAddress = row_slot(row_num);
+    return Row::deserialize(rowAddress);
 }
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
