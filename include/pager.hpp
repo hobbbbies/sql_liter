@@ -12,11 +12,8 @@ public:
     Pager(const std::string& filename);
     ~Pager();
 
-    Pager* pagerOpen(std::string& filename);
     uint8_t* getPage(uint32_t page_num);
-    void pagerClose();
-    uint32_t getFileLength();
-    void pagerFlush(uint32_t pageNum, uint32_t size=4096);
-    // void writePage(uint32_t page_num, uint8_t* page);
-    // void readPage(uint32_t page_num, uint8_t* page);
+    uint32_t getFileLength() const;
+    void pagerFlush(uint32_t pageNum, uint32_t size);
+    void flushAllPages(uint32_t numRows, uint32_t rowSize);  // New method
 };

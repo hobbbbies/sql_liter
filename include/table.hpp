@@ -18,7 +18,7 @@ private:
     static constexpr uint32_t ROWS_PER_PAGE = PAGE_SIZE / Row::getRowSize();
     static constexpr uint32_t TABLE_MAX_ROWS = ROWS_PER_PAGE * TABLE_MAX_PAGES;
 public:
-    Table(std::string filename);
+    Table(std:: string filename);
     ~Table();
     
     uint8_t* row_slot(uint32_t row_num) const;

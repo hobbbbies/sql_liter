@@ -6,10 +6,14 @@
 #include "table.hpp"
 #include "utils.hpp"
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Must supply database file name\n";
+        exit(EXIT_FAILURE);
+    }
     InputBuffer inputBuffer;
     MetaCommandProcessor metaProcessor;
-    Table db_table("temp.txt");
+    Table db_table(argv[1]);
     StatementProcessor statementProcessor = StatementProcessor(db_table);
     
     while (true) {
@@ -17,7 +21,7 @@ int main() {
         inputBuffer.readInput();
 
         if (inputBuffer.getBuffer()[0] == '.') {
-            MetaCommandResult result = metaProcessor.execute(inputBuffer.getBuffer());
+            MetaCommandResult result = metaProcessor.execute(inputBuffer.getBuffer(), &db_table);
             switch (result) {
                 case MetaCommandResult::META_COMMAND_SUCCESS:
                     std::cout << "Executed.\n";

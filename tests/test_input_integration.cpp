@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <sstream>
 #include <iostream>
+#include <cstdio>
 
 #include "input_buffer.hpp"
 #include "meta_command_processor.hpp"
@@ -10,11 +11,22 @@
 class InputIntegrationTest : public ::testing::Test {
 protected:
     void SetUp() override {
-        table = std::make_unique<Table>("test.txt");
+        test_filename = "test_integration.db";
+        std::remove(test_filename.c_str());  // Clean up any existing file
+        
+        table = std::make_unique<Table>(test_filename);
         processor = std::make_unique<StatementProcessor>(*table);
         meta_processor = std::make_unique<MetaCommandProcessor>();
     }
     
+    void TearDown() override {
+        processor.reset();
+        table.reset();
+        meta_processor.reset();
+        std::remove(test_filename.c_str());
+    }
+    
+    std::string test_filename;
     std::unique_ptr<Table> table;
     std::unique_ptr<StatementProcessor> processor;
     std::unique_ptr<MetaCommandProcessor> meta_processor;
@@ -78,7 +90,7 @@ TEST_F(InputIntegrationTest, ProcessMetaCommand) {
     // Check if it's a meta command
     EXPECT_EQ(buffer.getBuffer()[0], '.');
     
-    MetaCommandResult result = meta_processor->execute(buffer.getBuffer());
+    MetaCommandResult result = meta_processor->execute(buffer.getBuffer(), table.get());
     EXPECT_EQ(result, MetaCommandResult::META_COMMAND_SUCCESS);
 }
 
@@ -105,7 +117,7 @@ TEST_F(InputIntegrationTest, ProcessMultipleCommands) {
 TEST_F(InputIntegrationTest, PrintsErrorOnFullTable) {
     // 14 is the number of rows per page
     ExecuteResult loop_result = ExecuteResult::EXECUTE_SUCCESS;
-    for (int i = 0; i < TABLE_MAX_PAGES*14; i++) {
+    for (int i = 0; i < TABLE_MAX_PAGES * 14; i++) {
        try {
         table->insertRow(Row(i, "bob", "bob@test.com"));
        } catch (const std::out_of_range& e) {
@@ -129,18 +141,33 @@ TEST_F(InputIntegrationTest, AllowsStringsAtMaxLen) {
     EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
 }
 
-// rownum is unsigend so this never fails dumbass
 TEST_F(InputIntegrationTest, FailOnNegativeId) {
-    std::string full_command = "insert -1 stefan vitanov";
+    std::string full_command = "insert -1 stefan stefan@example.com";
     PrepareResult result = processor->execute(full_command);
-    std::cout << "result: " << static_cast<int>(result) << "\n";
+    // Should fail because -1 can't be converted to unsigned int
     EXPECT_EQ(result, PrepareResult::PREPARE_INTERNAL_FAILURE);
 }
 
+// THIS IS WHY YOU NEED unique_ptr!
 TEST_F(InputIntegrationTest, KeepsDataAfterClosingConnection) {
-    std::string full_command = "insert 1 stefan vitanov";
+    // Insert data
+    std::string full_command = "insert 1 stefan stefan@example.com";
     PrepareResult result = processor->execute(full_command);
     EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
+    EXPECT_EQ(table->getNumRows(), 1);
 
+    // *** CLOSE THE CONNECTION *** (destroy table and processor)
+    processor.reset();  // Delete processor
+    table.reset();      // Delete table - closes file, flushes data
     
+    // *** REOPEN THE CONNECTION *** (create new table with same file)
+    table = std::make_unique<Table>(test_filename);
+    processor = std::make_unique<StatementProcessor>(*table);
+    
+    // *** VERIFY DATA PERSISTED ***
+    EXPECT_EQ(table->getNumRows(), 1);  // Data should still be there!
+    Row retrieved = table->getRow(0);
+    EXPECT_EQ(retrieved.getId(), 1);
+    EXPECT_STREQ(retrieved.getUsername(), "stefan");
+    EXPECT_STREQ(retrieved.getEmail(), "stefan@example.com");
 }

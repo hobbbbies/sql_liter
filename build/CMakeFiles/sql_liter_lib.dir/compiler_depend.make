@@ -980,6 +980,7 @@ CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o: /Users/stefanvita
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__charconv/traits.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/convert_to_timespec.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/duration.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/file_clock.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/high_resolution_clock.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/steady_clock.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/system_clock.h \
@@ -1032,6 +1033,22 @@ CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o: /Users/stefanvita
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__exception/nested_exception.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__exception/operations.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__exception/terminate.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/copy_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_entry.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_status.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_time_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/file_type.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/filesystem_error.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/operations.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perm_options.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/perms.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/space_info.h \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__format/buffer.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__format/concepts.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__format/enable_insertable.h \
@@ -1399,9 +1416,12 @@ CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o: /Users/stefanvita
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/deque \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/errno.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/exception \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/filesystem \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/format \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/fstream \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/functional \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/initializer_list \
+  /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iomanip \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/ios \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iosfwd \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/iostream \
@@ -1589,8 +1609,12 @@ CMakeFiles/sql_liter_lib.dir/src/meta_command_processor.cpp.o: /Users/stefanvita
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdarg.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stddef.h \
   /Library/Developer/CommandLineTools/usr/lib/clang/17/include/stdint.h \
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/constants.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/enums.hpp \
-  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/meta_command_processor.hpp
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/meta_command_processor.hpp \
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/pager.hpp \
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/row.hpp \
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/table.hpp
 
 CMakeFiles/sql_liter_lib.dir/src/pager.cpp.o: /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/pager.cpp \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/Availability.h \
@@ -6441,11 +6465,17 @@ CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o: /Users/stefanvitanov/repos/Persona
 
 /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/tokenizer.hpp:
 
+/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/row.cpp:
+
+/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/pager.cpp:
+
 /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/table.hpp:
 
 /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/row.hpp:
 
-/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/row.cpp:
+/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/meta_command_processor.hpp:
+
+/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/enums.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/filesystem:
 
@@ -6468,10 +6498,6 @@ CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o: /Users/stefanvitanov/repos/Persona
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/directory_entry.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/copy_options.h:
-
-/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/pager.cpp:
-
-/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/meta_command_processor.hpp:
 
 /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/src/meta_command_processor.cpp:
 
@@ -6752,8 +6778,6 @@ CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o: /Users/stefanvitanov/repos/Persona
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_int64_t.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/cctype:
-
-/Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/enums.hpp:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/bit:
 
@@ -7607,6 +7631,10 @@ CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o: /Users/stefanvitanov/repos/Persona
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__concepts/boolean_testable.h:
 
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/count_if.h:
+
+/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/file_clock.h:
+
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__functional/binary_function.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__type_traits/is_trivially_destructible.h:
@@ -7960,10 +7988,6 @@ CMakeFiles/sql_liter_lib.dir/src/utils.cpp.o: /Users/stefanvitanov/repos/Persona
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/binary_search.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/new:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__chrono/file_clock.h:
-
-/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__algorithm/count_if.h:
 
 /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/sys/_types/_u_int8_t.h:
 

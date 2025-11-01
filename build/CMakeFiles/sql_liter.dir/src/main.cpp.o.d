@@ -795,7 +795,6 @@ CMakeFiles/sql_liter.dir/src/main.cpp.o: \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/enums.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/input_buffer.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/meta_command_processor.hpp \
-  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/statement_processor.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/table.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/constants.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/row.hpp \
@@ -820,4 +819,5 @@ CMakeFiles/sql_liter.dir/src/main.cpp.o: \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/path_iterator.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/recursive_directory_iterator.h \
   /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1/__filesystem/u8path.h \
+  /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/statement_processor.hpp \
   /Users/stefanvitanov/repos/Personal\ Projects/cpp/sql_liter/include/utils.hpp

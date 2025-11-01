@@ -10,6 +10,7 @@ Table::Table(std::string filename) {
 }
 
 Table::~Table() {
+    pager->flushAllPages(num_rows, Row::getRowSize());
     delete pager;
 }
 
