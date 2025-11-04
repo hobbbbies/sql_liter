@@ -7,7 +7,6 @@
 
 MetaCommandProcessor::MetaCommandProcessor() {
     commands[".exit"] = [](Table* table) {
-        delete table;
         std::exit(EXIT_SUCCESS);
         return MetaCommandResult::META_COMMAND_SUCCESS;
     };

@@ -1,18 +1,26 @@
 #include <gtest/gtest.h>
 #include "table.hpp"
 #include "row.hpp"
+#include <cstdio>
 
 class TableTest : public ::testing::Test {
 protected:
     void SetUp() override {
         table = std::make_unique<Table>("test.txt");
     }
+
+    void TearDown() override {
+        table.reset();
+        std::remove("test.txt");
+        std::remove("test2.txt");
+    }
     
     std::unique_ptr<Table> table;
 };
 
 TEST_F(TableTest, EmptyTableHasZeroRows) {
-    EXPECT_EQ(table->getNumRows(), 0);
+    std::unique_ptr<Table> empty_table = std::make_unique<Table>("test2.txt");
+    EXPECT_EQ(empty_table->getNumRows(), 0);
 }
 
 TEST_F(TableTest, InsertSingleRow) {
@@ -46,8 +54,10 @@ TEST_F(TableTest, InsertMultipleRows) {
 }
 
 TEST_F(TableTest, GetRowOutOfBounds) {
-    table->insertRow(Row(1, "test", "test@example.com"));
     
-    EXPECT_THROW(table->getRow(1), std::out_of_range);
-    EXPECT_THROW(table->getRow(100), std::out_of_range);
+    std::unique_ptr<Table> empty_table = std::make_unique<Table>("test2.txt");
+    empty_table->insertRow(Row(1, "test", "test@example.com"));
+
+    EXPECT_THROW(empty_table->getRow(1), std::out_of_range);
+    EXPECT_THROW(empty_table->getRow(100), std::out_of_range);
 }

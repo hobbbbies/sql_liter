@@ -36,8 +36,18 @@ void Table::insertRow(const Row& row) {
 }
 
 Row Table::getRow(uint32_t row_num) const {
-    uint8_t* rowAddress = row_slot(row_num);
-    return Row::deserialize(rowAddress);
+    if (row_num >= num_rows) {
+        throw std::out_of_range("row_num exceeds num_rows");
+    }
+    
+    try {
+        uint8_t* rowAddress = row_slot(row_num);
+        return Row::deserialize(rowAddress);
+    } catch (const std::out_of_range& e) {
+        throw std::out_of_range("Failed to get row " + std::to_string(row_num) + ": " + e.what());
+    } catch (const std::exception& e) {
+        throw std::runtime_error("Failed to retrieve row " + std::to_string(row_num) + ": " + e.what());
+    }
 }
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
@@ -49,6 +59,10 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
         return ExecuteResult::EXECUTE_FAILURE;
     }
     try {
+        if (!tokens[1].empty() && tokens[1][0] == '-') {
+            std::cout << "Error: Row ID cannot be negative\n";
+            return ExecuteResult::EXECUTE_FAILURE;
+        }
         uint32_t rowNum = static_cast<uint32_t>(std::stoul(tokens[1]));
         std::cout << "row num: " << rowNum << "\n";
         std::cout << "num rows: " << num_rows << "\n";
@@ -59,22 +73,29 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
         insertRow(newRow);
         return ExecuteResult::EXECUTE_SUCCESS;
     } catch (const std::exception& e) {
-        std::cout << "Error parsing insert values" << e.what() << "\n";
+        std::cout << "Error parsing insert values: " << e.what() << "\n";
         return ExecuteResult::EXECUTE_FAILURE;
     }
 }
 
 ExecuteResult Table::execute_select_all() {
-    for (uint32_t i = 0; i < num_rows; ++i) {
-        Row row = getRow(i);
-        row.printRow();
-    }
+    try {
+        for (uint32_t i = 0; i < num_rows; ++i) {
+            Row row = getRow(i);
+            row.printRow();
+        }
 
-    if (num_rows == 0) {
-        std::cout << "No rows in table.\n";
-    }
+        if (num_rows == 0) {
+            std::cout << "No rows in table.\n";
+        }
 
-    return ExecuteResult::EXECUTE_SUCCESS;
+        return ExecuteResult::EXECUTE_SUCCESS;
+    } catch (const std::out_of_range& e) {
+        throw std::out_of_range("Failed to retrivew a row.\n");
+    } catch (const std::exception& e) {
+        std::cout << "Error selecting rows: " << e.what() << "\n";
+        return ExecuteResult::EXECUTE_FAILURE;
+    }
 }
 
 ExecuteResult Table::execute_select(const std::vector<std::string>& /*tokens*/) {
