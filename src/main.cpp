@@ -29,6 +29,8 @@ int main(int argc, char* argv[]) {
                 case MetaCommandResult::META_COMMAND_UNRECOGNIZED_COMMAND:
                     std::cout << "Unrecognized command at start of '" << inputBuffer.getBuffer() << "'.\n";
                     break;
+                case MetaCommandResult::META_COMMAND_EXIT:
+                    return 0;
             }
             continue;
         }

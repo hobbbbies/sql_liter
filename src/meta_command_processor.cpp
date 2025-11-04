@@ -7,8 +7,7 @@
 
 MetaCommandProcessor::MetaCommandProcessor() {
     commands[".exit"] = [](Table* table) {
-        std::exit(EXIT_SUCCESS);
-        return MetaCommandResult::META_COMMAND_SUCCESS;
+        return MetaCommandResult::META_COMMAND_EXIT;
     };
 
     commands[".help"] = [](Table* table) {

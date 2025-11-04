@@ -20,9 +20,16 @@ protected:
     }
     
     void TearDown() override {
-        processor.reset();
-        table.reset();
-        meta_processor.reset();
+        // Only reset if they haven't been reset already
+        if (processor) {
+            processor.reset();
+        }
+        if (table) {
+            table.reset();
+        }
+        if (meta_processor) {
+            meta_processor.reset();
+        }
         std::remove(test_filename.c_str());
     }
     
@@ -155,15 +162,13 @@ TEST_F(InputIntegrationTest, KeepsDataAfterClosingConnection) {
     PrepareResult result = processor->execute(full_command);
     EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
     EXPECT_EQ(table->getNumRows(), 1);
-
     // *** CLOSE THE CONNECTION *** (destroy table and processor)
     processor.reset();  // Delete processor
     table.reset();      // Delete table - closes file, flushes data
-    
+
     // *** REOPEN THE CONNECTION *** (create new table with same file)
     table = std::make_unique<Table>(test_filename);
     processor = std::make_unique<StatementProcessor>(*table);
-    
     // *** VERIFY DATA PERSISTED ***
     EXPECT_EQ(table->getNumRows(), 1);  // Data should still be there!
     Row retrieved = table->getRow(0);

@@ -95,11 +95,17 @@ void Pager::pagerFlush(uint32_t pageNum, uint32_t size) {
     if (page == nullptr) {
         return; // Nothing to flush
     }
-
     fileDescriptor.seekp(pageNum * PAGE_SIZE, std::ios::beg);
     fileDescriptor.write(reinterpret_cast<const char*>(page), size);
 
     if (fileDescriptor.fail()) {
+        if (fileDescriptor.bad()) {
+            std::cerr << "A severe, non-recoverable error occurred." << std::endl;
+        } else if (fileDescriptor.eof()) {
+            std::cerr << "End of file reached during an operation." << std::endl;
+        } else {
+            std::cerr << "A logical error occurred during file operation." << std::endl;
+        }
         std::cerr << "Error flushing page " << pageNum << std::endl;
         throw std::runtime_error("Failed to write page to file");
     }
@@ -111,15 +117,28 @@ void Pager::flushAllPages(uint32_t numRows, uint32_t rowSize) {
     uint32_t rowsPerPage = PAGE_SIZE / rowSize;
     uint32_t fullPages = numRows / rowsPerPage;
     
-    // Flush full pages
-    for (uint32_t i = 0; i < fullPages; i++) {
-        pagerFlush(i, PAGE_SIZE);
-    }
-    
-    // Flush partial page if it exists
-    uint32_t additionalRows = numRows % rowsPerPage;
-    if (additionalRows > 0) {
-        uint32_t partialPageSize = additionalRows * rowSize;
-        pagerFlush(fullPages, partialPageSize);
+    try {        
+        // Flush full pages
+        std::cout << "Flushing...";
+        std::cout << "Num rows: " << numRows << "\n";
+        for (uint32_t i = 0; i < fullPages; i++) {
+            pagerFlush(i, PAGE_SIZE);
+        }
+        
+        
+        // Flush partial page if it exists
+        uint32_t additionalRows = numRows % rowsPerPage;
+        if (additionalRows > 0) {
+            uint32_t partialPageSize = additionalRows * rowSize;
+            pagerFlush(fullPages, partialPageSize);
+        }
+        std::cout << "Done!\nProgram safe for termination.\n";
+    } catch(const std::exception& e) {
+        std::cerr << "FATAL ERROR: Failed to flush data to disk - DATA MAY BE LOST!\n";
+        std::cerr << "Error details: " << e.what() << "\n";
+        std::cerr << "Database file may be corrupted. Check disk space and permissions.\n";
+        
+        // Since this is called from destructor, we can't throw
+        std::abort();  
     }
 }
