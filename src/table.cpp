@@ -9,7 +9,7 @@ Table::Table(std::string filename) {
     num_rows = pager->getFileLength() / Row::getRowSize();
 }
 
-Table::~Table() {
+Table::~Table() {     
     pager->flushAllPages(num_rows, Row::getRowSize());
     delete pager;
 }

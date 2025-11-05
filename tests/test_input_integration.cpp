@@ -25,7 +25,9 @@ protected:
             processor.reset();
         }
         if (table) {
-            table.reset();
+            std::cout << "trying...\n";
+             table.reset();
+            std::cout << "tried\n";
         }
         if (meta_processor) {
             meta_processor.reset();
@@ -158,10 +160,13 @@ TEST_F(InputIntegrationTest, FailOnNegativeId) {
 // THIS IS WHY YOU NEED unique_ptr!
 TEST_F(InputIntegrationTest, KeepsDataAfterClosingConnection) {
     // Insert data
-    std::string full_command = "insert 1 stefan stefan@example.com";
-    PrepareResult result = processor->execute(full_command);
-    EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
-    EXPECT_EQ(table->getNumRows(), 1);
+    std::string first_command = "insert 1 stefan stefan@example.com";
+    std::string second_command = "insert 2 other other@example.com";
+    PrepareResult first = processor->execute(first_command);
+    PrepareResult second = processor->execute(second_command);
+    EXPECT_EQ(first, PrepareResult::PREPARE_SUCCESS);
+    EXPECT_EQ(second, PrepareResult::PREPARE_SUCCESS);
+    EXPECT_EQ(table->getNumRows(), 2);
     // *** CLOSE THE CONNECTION *** (destroy table and processor)
     processor.reset();  // Delete processor
     table.reset();      // Delete table - closes file, flushes data
@@ -170,7 +175,7 @@ TEST_F(InputIntegrationTest, KeepsDataAfterClosingConnection) {
     table = std::make_unique<Table>(test_filename);
     processor = std::make_unique<StatementProcessor>(*table);
     // *** VERIFY DATA PERSISTED ***
-    EXPECT_EQ(table->getNumRows(), 1);  // Data should still be there!
+    EXPECT_EQ(table->getNumRows(), 2);  // Data should still be there!
     Row retrieved = table->getRow(0);
     EXPECT_EQ(retrieved.getId(), 1);
     EXPECT_STREQ(retrieved.getUsername(), "stefan");

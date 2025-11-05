@@ -8,6 +8,8 @@ private:
     std::fstream fileDescriptor;
     uint32_t fileLength;
     uint8_t* pages[TABLE_MAX_PAGES];
+    void getFdStatus(const std::string& context);  // Debug helper method
+
 public:
     Pager(const std::string& filename);
     ~Pager();
