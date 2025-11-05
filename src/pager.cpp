@@ -58,6 +58,8 @@ uint8_t* Pager::getPage(uint32_t pageNum) {
         throw std::out_of_range("Page number exceeds maximum pages");
     }
 
+    getFdStatus("before getPage");
+
     uint8_t* page = pages[pageNum];
     if (page == nullptr) { 
         // Not cached - this is where pages get allocated!
@@ -89,16 +91,17 @@ uint8_t* Pager::getPage(uint32_t pageNum) {
             std::cout << "DEBUG: Created new empty page " << pageNum << "\n";
         }
     }
-
+    getFdStatus("after getPage");
     return page;
 }
 
-uint32_t Pager::getFileLength() const { 
+uint32_t Pager::getFileLength() const {
     return fileLength; 
 }
 
 // size = bytes to write (PAGE_SIZE for full page, or calculated size for partial page)
 void Pager::pagerFlush(uint32_t pageNum, uint32_t size) {
+    getFdStatus("start of pager flush");
     if (pageNum >= TABLE_MAX_PAGES) {
         throw std::out_of_range("Page number exceeds maximum pages");
     }
