@@ -15,6 +15,14 @@ Table::~Table() {
 }
 
 // Returns ptr row to serialize; initializes page if needed
+
+uint8_t* Table::getPageAddress(uint32_t pageNum) const{
+    if (pageNum >= TABLE_MAX_PAGES) {
+        throw std::out_of_range("Page number exceeds maximum pages");
+    }
+    return pager->getPage(pageNum);
+}
+
 uint8_t* Table::row_slot(uint32_t row_num) const {
     uint32_t page_num = row_num / ROWS_PER_PAGE;
     if (page_num >= TABLE_MAX_PAGES) {
@@ -98,7 +106,7 @@ ExecuteResult Table::execute_select_all() {
     }
 }
 
-ExecuteResult Table::execute_select(const std::vector<std::string>& /*tokens*/) {
+ExecuteResult Table::execute_select(const std::vector<std::string>&) {
     // Not implemented yet
     return ExecuteResult::EXECUTE_SUCCESS;
 }
