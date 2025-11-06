@@ -24,7 +24,7 @@ public:
     uint32_t getNumRows() const { return num_rows; }
     void incrementRows() { ++num_rows; }
     void insertRow(const Row& row);
-    Row getRow(uint32_t row_num) const;
+    Row getRow(uint32_t row_num);
 
     ExecuteResult execute_insert(const std::vector<std::string> tokens);
     ExecuteResult execute_select_all();

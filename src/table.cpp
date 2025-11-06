@@ -1,5 +1,6 @@
 #include "table.hpp"
 #include "pager.hpp"
+#include "cursor.hpp"
 #include <cstring>
 #include <stdexcept>
 #include <iostream>
@@ -38,18 +39,20 @@ void Table::insertRow(const Row& row) {
     if (num_rows == TABLE_MAX_ROWS) { 
         throw std::out_of_range("Table is full");
     }
-    void* slot = row_slot(num_rows);
+    Cursor cursor(*this, num_rows);
+    void* slot = cursor.cursorSlot();
     row.serialize(slot);
-    ++num_rows;
+    num_rows++;
 }
 
-Row Table::getRow(uint32_t row_num) const {
+Row Table::getRow(uint32_t row_num) {
     if (row_num >= num_rows) {
         throw std::out_of_range("row_num exceeds num_rows");
     }
     
-    try {
-        uint8_t* rowAddress = row_slot(row_num);
+    try {        
+        Cursor cursor(*this, row_num);
+        void* rowAddress = cursor.cursorSlot();        
         return Row::deserialize(rowAddress);
     } catch (const std::out_of_range& e) {
         throw std::out_of_range("Failed to get row " + std::to_string(row_num) + ": " + e.what());
