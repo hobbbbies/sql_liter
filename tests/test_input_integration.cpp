@@ -167,6 +167,10 @@ TEST_F(InputIntegrationTest, KeepsDataAfterClosingConnection) {
     EXPECT_EQ(first, PrepareResult::PREPARE_SUCCESS);
     EXPECT_EQ(second, PrepareResult::PREPARE_SUCCESS);
     EXPECT_EQ(table->getNumRows(), 2);
+    Row retrieved_old = table->getRow(0);
+    EXPECT_EQ(retrieved_old.getId(), 1);
+    EXPECT_STREQ(retrieved_old.getUsername(), "stefan");
+    EXPECT_STREQ(retrieved_old.getEmail(), "stefan@example.com");
     // *** CLOSE THE CONNECTION *** (destroy table and processor)
     processor.reset();  // Delete processor
     table.reset();      // Delete table - closes file, flushes data

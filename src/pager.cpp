@@ -80,12 +80,16 @@ uint8_t* Pager::getPage(uint32_t pageNum) {
             fileDescriptor.seekg(pageNum * PAGE_SIZE, std::ios::beg);
             fileDescriptor.read(reinterpret_cast<char*>(page), PAGE_SIZE);
 
-            if (fileDescriptor.fail() && !fileDescriptor.eof()) {
-                std::cerr << "Error reading page " << pageNum << std::endl;
-                delete[] page;
-                pages[pageNum] = nullptr;
-                throw std::runtime_error("Failed to read page from file");
-            }
+            if (fileDescriptor.fail()) {
+                if (fileDescriptor.eof()) {
+                    fileDescriptor.clear();
+                } else {
+                    std::cerr << "Error reading page " << pageNum << std::endl;
+                    delete[] page;
+                    pages[pageNum] = nullptr;
+                    throw std::runtime_error("Failed to read page from file");
+                }                
+            } 
             std::cout << "DEBUG: Loaded page " << pageNum << " from file\n";
         } else {
             std::cout << "DEBUG: Created new empty page " << pageNum << "\n";
@@ -133,12 +137,13 @@ void Pager::pagerFlush(uint32_t pageNum, uint32_t size) {
     }
     std::cout << "DEBUG: Page contains " << (hasData ? "non-zero" : "all-zero") << " data\n";
     
-    Pager::getFdStatus("DEBUG: File descriptor position before seek: ");
+    Pager::getFdStatus("DEBUG: File descriptor position before tellp: ");
 
     uint32_t targetPos = pageNum * PAGE_SIZE;
     // Calculate target position
     std::cout << "DEBUG: Target position for page " << pageNum << ": " << targetPos << "\n";
     
+    Pager::getFdStatus("DEBUG: File descriptor position before seek: ");
     // Seek to write position
     fileDescriptor.seekp(targetPos, std::ios::beg);
     
