@@ -98,3 +98,21 @@ TEST_F(CursorTest, CursorAcrossDifferentPages) {
     
     EXPECT_EQ(slot, expectedSlot);
 }
+
+TEST_F(CursorTest, CursorInitAtInvalidRowThrowsError) {
+    EXPECT_THROW(Cursor firstCursor(*table, TABLE_MAX_ROWS + 1);, std::out_of_range);
+    EXPECT_THROW(Cursor secondCursor(*table, -100);, std::out_of_range);
+}
+
+TEST_F(CursorTest, CursorAdvanceIncrementsRowNum) {
+    Cursor cursor(*table, 0);
+    
+    void* slot0 = cursor.cursorSlot();    
+    uint8_t* page0 = table->getPageAddress(0);
+    EXPECT_EQ(slot0, page0);  // First row should be at start of first page
+    cursor.cursorAdvance();
+    void* slot1 = cursor.cursorSlot();
+    uint8_t* page1 = table->getPageAddress(1);
+    uint8_t* expectedPage = page1 * Row::getRowSize();
+    EXPECT_EQ(slot1, page1 * expect);
+}
