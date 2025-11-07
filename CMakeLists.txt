@@ -18,6 +18,7 @@ set(LIB_SOURCES
     src/meta_command_processor.cpp
     src/utils.cpp
     src/pager.cpp
+    src/cursor.cpp
 )
 
 # Create a library for the core functionality
@@ -56,6 +57,7 @@ set(TEST_SOURCES
     tests/test_tokenizer.cpp
     tests/test_input_integration.cpp
     tests/test_pager.cpp
+    tests/test_cursor.cpp
 )
 
 # Test executable

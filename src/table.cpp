@@ -39,6 +39,7 @@ void Table::insertRow(const Row& row) {
     if (num_rows == TABLE_MAX_ROWS) { 
         throw std::out_of_range("Table is full");
     }
+    
     Cursor cursor(*this, num_rows);
     void* slot = cursor.cursorSlot();
     row.serialize(slot);
@@ -50,15 +51,9 @@ Row Table::getRow(uint32_t row_num) {
         throw std::out_of_range("row_num exceeds num_rows");
     }
     
-    try {        
-        Cursor cursor(*this, row_num);
-        void* rowAddress = cursor.cursorSlot();        
-        return Row::deserialize(rowAddress);
-    } catch (const std::out_of_range& e) {
-        throw std::out_of_range("Failed to get row " + std::to_string(row_num) + ": " + e.what());
-    } catch (const std::exception& e) {
-        throw std::runtime_error("Failed to retrieve row " + std::to_string(row_num) + ": " + e.what());
-    }
+    Cursor cursor(*this, row_num);
+    void* rowAddress = cursor.cursorSlot();        
+    return Row::deserialize(rowAddress);
 }
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
