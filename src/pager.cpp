@@ -25,8 +25,13 @@ Pager::Pager(const std::string& filename) {
     fileDescriptor.seekg(0, std::ios::end);
     fileLength = static_cast<uint32_t>(fileDescriptor.tellg());
     fileDescriptor.seekg(0, std::ios::beg);
-    
 
+    numPages = fileLength / PAGE_SIZE;         
+    if (fileLength % PAGE_SIZE) {
+        std::cerr <<"Error: File size is not a multiple of page size. Corrupt File\n";
+        exit(EXIT_FAILURE);
+    }
+    
     for (int i = 0; i < TABLE_MAX_PAGES; i++) {
         pages[i] = nullptr;    
     } 
@@ -64,12 +69,6 @@ uint8_t* Pager::getPage(uint32_t pageNum) {
         page = pages[pageNum] = new uint8_t[PAGE_SIZE];
         std::memset(page, 0, PAGE_SIZE);
         
-        uint32_t numPages = fileLength / PAGE_SIZE;         
-        // If there's an extra page that doesn't take up a full 4096 kb
-        if (fileLength % PAGE_SIZE) {
-            numPages++;
-        }
-
         // Check if page_num is in range of numPages. If it is, we need to read from file
         // else, just return page pointer. Read from it later. 
         if (pageNum < numPages) {
@@ -163,3 +162,6 @@ void Pager::flushAllPages(uint32_t numRows, uint32_t rowSize) {
     }   
 }
 
+uint32_t Pager::getNumPages() {
+    return numPages;
+}

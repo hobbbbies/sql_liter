@@ -7,7 +7,14 @@
 
 Table::Table(std::string filename) {
     pager = new Pager(filename);
-    num_rows = pager->getFileLength() / Row::getRowSize();
+    rootPageNum = 0;
+
+    // Empty file ?
+    if (pager.getNumPages() == 0) {
+        uint8_t* node_data = pager.getPage(rootPageNum);
+        Node node(node_data);
+        node.initializeLeafNode();
+    }
 }
 
 Table::~Table() {     
