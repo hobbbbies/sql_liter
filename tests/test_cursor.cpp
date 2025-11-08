@@ -110,9 +110,12 @@ TEST_F(CursorTest, CursorAdvanceIncrementsRowNum) {
     void* slot0 = cursor.cursorSlot();    
     uint8_t* page0 = table->getPageAddress(0);
     EXPECT_EQ(slot0, page0);  // First row should be at start of first page
+    
     cursor.cursorAdvance();
     void* slot1 = cursor.cursorSlot();
-    uint8_t* page1 = table->getPageAddress(1);
-    uint8_t* expectedPage = page1 * Row::getRowSize();
-    EXPECT_EQ(slot1, page1 * expect);
+    
+    // After advancing from row 0 to row 1, we should still be on page 0
+    // but at offset = 1 * Row::getRowSize()
+    uint8_t* expectedSlot1 = page0 + Row::getRowSize();
+    EXPECT_EQ(slot1, expectedSlot1);
 }

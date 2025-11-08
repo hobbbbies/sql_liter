@@ -12,8 +12,8 @@
 
 class Table {
 private:
-    uint32_t num_rows;
     Pager* pager;
+    uint32_t rootPageNum;
 
 public:
     Table(std::string filename);
