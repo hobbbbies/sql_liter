@@ -87,10 +87,13 @@ uint8_t* Pager::getPage(uint32_t pageNum) {
                     throw std::runtime_error("Failed to read page from file");
                 }                
             }
-        } else {
-            
-        }
+        } 
     }
+    // do after file reading incase of fail 
+    if (pageNum >= numPages) {
+        numPages = pageNum + 1;
+    }
+    
     return page;
 }
 
@@ -99,7 +102,7 @@ uint32_t Pager::getFileLength() const {
 }
 
 // size = bytes to write (PAGE_SIZE for full page, or calculated size for partial page)
-void Pager::pagerFlush(uint32_t pageNum, uint32_t size) {
+void Pager::pagerFlush(uint32_t pageNum) {
     if (pageNum >= TABLE_MAX_PAGES) {
         throw std::out_of_range("Page number exceeds maximum pages");
     }
@@ -123,7 +126,7 @@ void Pager::pagerFlush(uint32_t pageNum, uint32_t size) {
     }
     
     // Perform the write
-    fileDescriptor.write(reinterpret_cast<const char*>(page), size);
+    fileDescriptor.write(reinterpret_cast<const char*>(page), PAGE_SIZE);
     
     if (fileDescriptor.fail()) {
         if (fileDescriptor.bad()) {
@@ -145,18 +148,11 @@ void Pager::flushAllPages(uint32_t numRows, uint32_t rowSize) {
     uint32_t fullPages = numRows / rowsPerPage;
 
     try {        
-        
-        // Flush full pages
+        // Change to numPages 
         for (uint32_t i = 0; i < fullPages; i++) {
-            pagerFlush(i, PAGE_SIZE);
+            pagerFlush(i);
         }
-        
-        // Flush partial page if it exists
-        uint32_t additionalRows = numRows % rowsPerPage;
-        if (additionalRows > 0) {
-            uint32_t partialPageSize = additionalRows * rowSize;
-            pagerFlush(fullPages, partialPageSize);
-        }
+
         std::cout << "Done! Program safe for termination.\n";
     } catch(const std::exception& e) {
         std::cerr << "FATAL ERROR: Failed to flush data to disk - DATA MAY BE LOST!\n";
