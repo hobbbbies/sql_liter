@@ -11,8 +11,8 @@ Table::Table(std::string filename) {
     rootPageNum = 0;
 
     // Empty file ?
-    if (pager.getNumPages() == 0) {
-        uint8_t* node_data = pager.getPage(rootPageNum);
+    if (pager->getNumPages() == 0) {
+        uint8_t* node_data = pager->getPage(rootPageNum);
         Node node(node_data);
         node.initializeLeafNode();
     }
@@ -32,19 +32,8 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
     return pager->getPage(pageNum);
 }
 
-uint8_t* Table::row_slot(uint32_t row_num) const {
-    uint32_t page_num = row_num / ROWS_PER_PAGE;
-    if (page_num >= TABLE_MAX_PAGES) {
-        throw std::out_of_range("Page number exceeds maximum pages");
-    }
-    uint8_t* page = pager->getPage(page_num);
-    uint32_t row_offset = row_num % ROWS_PER_PAGE;
-    uint32_t byte_offset = row_offset * Row::getRowSize();
-    return page + byte_offset;
-}
-
 void Table::insertRow(const Row& row) {
-    uint8_t* nodeData = pager->getPage(rootPageNum);
+    uint8_t* nodeData = getPageAddress(rootPageNum);
     Node node(nodeData);
     uint32_t insertPos = *node.leafNodeNumCells();  // Always insert at end
     node.leafNodeInsert(row.getId(), &row, insertPos);
@@ -61,7 +50,7 @@ Row Table::getRow(uint32_t row_num) {
 }
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
-    uint8_t* node_data = pager.getPage(rootPageNum);
+    uint8_t* node_data = getPageAddress(rootPageNum);
     Node node(node_data);
     if (*node.leafNodeNumCells() == LEAF_NODE_MAX_CELLS) {
         return ExecuteResult::EXECUTE_TABLE_FULL;

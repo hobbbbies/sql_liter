@@ -143,12 +143,9 @@ void Pager::pagerFlush(uint32_t pageNum) {
 }
 
 void Pager::flushAllPages(uint32_t numRows, uint32_t rowSize) {
-    uint32_t rowsPerPage = PAGE_SIZE / rowSize;
-    uint32_t fullPages = numRows / rowsPerPage;
 
     try {        
-        // Change to numPages 
-        for (uint32_t i = 0; i < fullPages; i++) {
+        for (uint32_t i = 0; i < numPages; i++) {
             pagerFlush(i);
         }
 

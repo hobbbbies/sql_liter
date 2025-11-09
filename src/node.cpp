@@ -22,7 +22,7 @@ void Node::initializeLeafNode() {
     *leafNodeNumCells() = 0;
 }
 
-void Node::leafNodeInsert(uint32_t key, Row* value, uint32_t cellNum) {    
+void Node::leafNodeInsert(uint32_t key, const Row* value, uint32_t cellNum) {    
     // split here 
     if (cellNum >= LEAF_NODE_MAX_CELLS) {
         throw std::out_of_range("Cell number exceeds maximum cells");
@@ -36,9 +36,8 @@ void Node::leafNodeInsert(uint32_t key, Row* value, uint32_t cellNum) {
         }
     }
     
-    uint8_t* cell = leafNodeCell(cellNum);
     *leafNodeKey(cellNum) = key;
-    Row::serialize(value, leafNodeValue(cellNum));
+    value->serialize(leafNodeValue(cellNum));
     *leafNodeNumCells() = numCells + 1;
 }
 
