@@ -1,18 +1,40 @@
 #include "cursor.hpp"
 #include "node.hpp"
 
-Cursor::Cursor(Table& table, uint32_t pageNum, uint32_t cellNum) : table(table), pageNum(pageNum), cellNum(cellNum) {
-    if (pageNum >= TABLE_MAX_PAGES) {
-        throw std::out_of_range("Page number " + std::to_string(pageNum) + " exceeds maximum pages (" + std::to_string(TABLE_MAX_PAGES) + ")");
-    }
+Cursor::Cursor(Table& table, bool endOfTableFlag, uint32_t pageNum, uint32_t cellNum) : table(table) {
+    if (endOfTableFlag) {
+        // Position cursor at end of table
+        this->pageNum = table.getRootPageNum();
+        uint8_t* nodeData = table.getPageAddress(this->pageNum);
+        Node node(nodeData);
+        this->cellNum = *node.leafNodeNumCells();
+        this->endOfTable = true;
+    } else {
+        // Use provided pageNum and cellNum, or defaults (start of table)
+        if (pageNum == UINT32_MAX) {
+            // Default to start of table (root page, cell 0)
+            this->pageNum = table.getRootPageNum();
+            this->cellNum = 0;
+        } else {
+            // Use provided values
+            this->pageNum = pageNum;
+            this->cellNum = (cellNum == UINT32_MAX) ? 0 : cellNum;
+        }
+        
+        if (this->pageNum >= TABLE_MAX_PAGES) {
+            throw std::out_of_range("Page number " + std::to_string(this->pageNum) + " exceeds maximum pages (" + std::to_string(TABLE_MAX_PAGES) + ")");
+        }
 
-    uint8_t* nodeData = table.getPageAddress(pageNum);
-    Node node(nodeData);
-    uint32_t numCells = *node.leafNodeNumCells();
-    if (cellNum >= numCells) {
-        throw std::out_of_range("Cell number " + std::to_string(cellNum) + " exceeds number of cells (" + std::to_string(numCells) + ")");
+        uint8_t* nodeData = table.getPageAddress(this->pageNum);
+        Node node(nodeData);
+        uint32_t numCells = *node.leafNodeNumCells();
+        
+        if (this->cellNum > numCells) {
+            throw std::out_of_range("Cell number " + std::to_string(this->cellNum) + " exceeds number of cells (" + std::to_string(numCells) + ")");
+        }
+        
+        this->endOfTable = this->cellNum >= numCells;
     }
-    endOfTable = cellNum >= numCells;
 }
 
 Cursor::~Cursor() {}

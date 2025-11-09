@@ -1,6 +1,7 @@
 #include "table.hpp"
 #include "pager.hpp"
 #include "cursor.hpp"
+#include "node.hpp"
 #include <cstring>
 #include <stdexcept>
 #include <iostream>
@@ -43,14 +44,10 @@ uint8_t* Table::row_slot(uint32_t row_num) const {
 }
 
 void Table::insertRow(const Row& row) {
-    if (num_rows == TABLE_MAX_ROWS) { 
-        throw std::out_of_range("Table is full");
-    }
-    
-    Cursor cursor(*this, num_rows);
-    void* slot = cursor.cursorSlot();
-    row.serialize(slot);
-    num_rows++;
+    uint8_t* nodeData = pager->getPage(rootPageNum);
+    Node node(nodeData);
+    uint32_t insertPos = *node.leafNodeNumCells();  // Always insert at end
+    node.leafNodeInsert(row.getId(), &row, insertPos);
 }
 
 Row Table::getRow(uint32_t row_num) {
@@ -64,7 +61,9 @@ Row Table::getRow(uint32_t row_num) {
 }
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
-    if (num_rows == TABLE_MAX_ROWS) {
+    uint8_t* node_data = pager.getPage(rootPageNum);
+    Node node(node_data);
+    if (*node.leafNodeNumCells() == LEAF_NODE_MAX_CELLS) {
         return ExecuteResult::EXECUTE_TABLE_FULL;
     }
 

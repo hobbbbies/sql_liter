@@ -1,4 +1,6 @@
 #include "node.hpp"
+#include "row.hpp"
+#include <iostream>
 
 uint32_t* Node::leafNodeNumCells() {
     return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + LEAF_NODE_NUM_CELLS_OFFSET);
@@ -20,8 +22,7 @@ void Node::initializeLeafNode() {
     *leafNodeNumCells() = 0;
 }
 
-void Node::leafNodeInsert(uint32_t key, Row* value, uint32_t cellNum) {
-    
+void Node::leafNodeInsert(uint32_t key, Row* value, uint32_t cellNum) {    
     // split here 
     if (cellNum >= LEAF_NODE_MAX_CELLS) {
         throw std::out_of_range("Cell number exceeds maximum cells");
@@ -37,6 +38,15 @@ void Node::leafNodeInsert(uint32_t key, Row* value, uint32_t cellNum) {
     
     uint8_t* cell = leafNodeCell(cellNum);
     *leafNodeKey(cellNum) = key;
-    std::memcpy(leafNodeValue(cellNum), value, ROW_SIZE);
+    Row::serialize(value, leafNodeValue(cellNum));
     *leafNodeNumCells() = numCells + 1;
+}
+
+void Node::printLeafNode() {
+    uint32_t numCells = *leafNodeNumCells();
+    std::cout << "leaf (size " << numCells << ")\n";
+    for (uint32_t i = 0; i < numCells; i++) {
+        uint32_t key = *leafNodeKey(i);
+        std::cout << "  - " << i << " : " << key << "\n";
+    }
 }
