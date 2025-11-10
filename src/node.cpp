@@ -19,6 +19,7 @@ void* Node::leafNodeValue(uint32_t cellNum) {
 }
 
 void Node::initializeLeafNode() {
+    setNodeType(NodeType::NODE_LEAF);
     *leafNodeNumCells() = 0;
 }
 
@@ -48,4 +49,12 @@ void Node::printLeafNode() {
         uint32_t key = *leafNodeKey(i);
         std::cout << "  - " << i << " : " << key << "\n";
     }
+}
+
+NodeType Node::getNodeType() const {
+    return static_cast<NodeType>(*static_cast<uint8_t*>(data));
+}
+
+void Node::setNodeType(NodeType type) {
+    *static_cast<uint8_t*>(data) = static_cast<uint8_t>(type);
 }
