@@ -1,22 +1,18 @@
 #include "cursor.hpp"
 #include "node.hpp"
 
-Cursor::Cursor(Table& table, uint32_t key) : table(table) {
-    // create node object
-    uint8_t* nodeData = table.getPageAddress(pageNum);
+Cursor::Cursor(Table& table, uint32_t key) : table(table), endOfTable(false) {
+    // Start at root page
+    uint32_t rootPageNum = table.getRootPageNum();
+    uint8_t* nodeData = table.getPageAddress(rootPageNum);
     Node node(nodeData);     
 
     // find key in node - Either leaf or internal node
     NodeType nodeType = node.getNodeType();
     if (nodeType == NodeType::NODE_LEAF) {
-        leafNodeFind(key, table.getRootPageNum());
+        leafNodeFind(key, rootPageNum);
     } else {
-        // stub
-    }        
-    uint32_t numCells = *node.leafNodeNumCells();
-    
-    if (this->cellNum > numCells) {
-        throw std::out_of_range("Cell number " + std::to_string(this->cellNum) + " exceeds number of cells (" + std::to_string(numCells) + ")");
+        // stub for internal nodes
     }
 }
 
@@ -24,7 +20,7 @@ Cursor::Cursor(Table& table, uint32_t key) : table(table) {
 Cursor::~Cursor() {}
 
 // sets cursor to correct cell within given row (pageNum)
-void* leafNodeFind(uint32_t key, uint32_t pageNum) {
+void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
     this->pageNum = pageNum;
 
     uint8_t* nodeData = table.getPageAddress(pageNum);
@@ -46,7 +42,6 @@ void* leafNodeFind(uint32_t key, uint32_t pageNum) {
     }
 
     this->cellNum = minIndex;
-    return;
 }
 
 // Gives pointer in memory to row 

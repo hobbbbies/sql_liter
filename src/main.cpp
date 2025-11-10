@@ -45,6 +45,10 @@ int main(int argc, char* argv[]) {
                 continue;
             case PrepareResult::PREPARE_SYNTAX_ERROR:
                 std::cout << "Invalid syntax\n";
+                continue;
+            case PrepareResult::PREPARE_INTERNAL_FAILURE:
+                std::cout << "Internal error\n";
+                continue;
         }
     }
     

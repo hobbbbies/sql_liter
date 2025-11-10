@@ -22,6 +22,9 @@ public:
                 } else if (result == ExecuteResult::EXECUTE_TABLE_FULL) {
                     std::cout << "Table is full\n";
                     return PrepareResult::PREPARE_INTERNAL_FAILURE;
+                } else if (result == ExecuteResult::EXECUTE_DUPLICATE_KEY) {
+                    std::cout << "Duplicate key error\n";
+                    return PrepareResult::PREPARE_INTERNAL_FAILURE;
                 }
                 std::cout << "Table: " << tokens[2] << "\n";
             } else {

@@ -35,8 +35,18 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
 void Table::insertRow(const Row& row) {
     uint8_t* nodeData = getPageAddress(rootPageNum);
     Node node(nodeData);
-    uint32_t insertPos = *node.leafNodeNumCells();  // Always insert at end
-    node.leafNodeInsert(row.getId(), &row, insertPos);
+    Cursor cursor(*this, row.getId());
+    
+    // Check if we're inserting at a position with existing cells
+    uint32_t numCells = *node.leafNodeNumCells();
+    if (cursor.getCellNum() < numCells) {
+        uint32_t keyAtPosition = *node.leafNodeKey(cursor.getCellNum());
+        if (keyAtPosition == row.getId()) {
+            throw std::invalid_argument("Duplicate key");
+        }
+    }
+    
+    node.leafNodeInsert(row.getId(), &row, cursor.getCellNum());
 }
 
 Row Table::getRow(uint32_t row_num) {
@@ -74,6 +84,9 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
         Row newRow(rowNum, username, email);
         insertRow(newRow);
         return ExecuteResult::EXECUTE_SUCCESS;
+    } catch (const std::invalid_argument& e) {
+        std::cout << "Error: " << e.what() << "\n";
+        return ExecuteResult::EXECUTE_DUPLICATE_KEY;
     } catch (const std::exception& e) {
         std::cout << "Error parsing insert values: " << e.what() << "\n";
         return ExecuteResult::EXECUTE_FAILURE;
