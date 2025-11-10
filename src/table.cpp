@@ -52,6 +52,7 @@ Row Table::getRow(uint32_t row_num) {
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
     uint8_t* node_data = getPageAddress(rootPageNum);
     Node node(node_data);
+    std::cout << "num cells: " << *node.leafNodeNumCells() << "\n";
     if (*node.leafNodeNumCells() == LEAF_NODE_MAX_CELLS) {
         return ExecuteResult::EXECUTE_TABLE_FULL;
     }

@@ -26,7 +26,7 @@ Pager::Pager(const std::string& filename) {
     fileLength = static_cast<uint32_t>(fileDescriptor.tellg());
     fileDescriptor.seekg(0, std::ios::beg);
 
-    numPages = fileLength / PAGE_SIZE;         
+    numPages = fileLength / PAGE_SIZE;      
     if (fileLength % PAGE_SIZE) {
         std::cerr <<"Error: File size is not a multiple of page size. Corrupt File\n";
         exit(EXIT_FAILURE);
