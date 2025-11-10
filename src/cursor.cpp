@@ -1,7 +1,7 @@
 #include "cursor.hpp"
 #include "node.hpp"
 
-Cursor::Cursor(Table& table, uint32_t key, uint32_t pageNum, uint32_t cellNum) : table(table) {
+Cursor::Cursor(Table& table, uint32_t key) : table(table) {
     // create node object
     uint8_t* nodeData = table.getPageAddress(pageNum);
     Node node(nodeData);     
@@ -9,39 +9,45 @@ Cursor::Cursor(Table& table, uint32_t key, uint32_t pageNum, uint32_t cellNum) :
     // find key in node - Either leaf or internal node
     NodeType nodeType = node.getNodeType();
     if (nodeType == NodeType::NODE_LEAF) {
-        // stub
+        leafNodeFind(key, table.getRootPageNum());
     } else {
         // stub
-    }
-    
-    // Use provided pageNum and cellNum, or defaults (start of table)
-    if (pageNum == UINT32_MAX) {
-        // Default to start of table (root page, cell 0)
-        this->pageNum = table.getRootPageNum();
-        this->cellNum = 0;
-    } else {
-        // Use provided values
-        this->pageNum = pageNum;
-        this->cellNum = (cellNum == UINT32_MAX) ? 0 : cellNum;
-    }
-    
-    if (this->pageNum >= TABLE_MAX_PAGES) {
-        throw std::out_of_range("Page number " + std::to_string(this->pageNum) + " exceeds maximum pages (" + std::to_string(TABLE_MAX_PAGES) + ")");
-    }
-
-    uint8_t* nodeData = table.getPageAddress(this->pageNum);
-    Node node(nodeData);
+    }        
     uint32_t numCells = *node.leafNodeNumCells();
     
     if (this->cellNum > numCells) {
         throw std::out_of_range("Cell number " + std::to_string(this->cellNum) + " exceeds number of cells (" + std::to_string(numCells) + ")");
     }
-    
-    this->endOfTable = this->cellNum >= numCells;
 }
 
 
 Cursor::~Cursor() {}
+
+// sets cursor to correct cell within given row (pageNum)
+void* leafNodeFind(uint32_t key, uint32_t pageNum) {
+    this->pageNum = pageNum;
+
+    uint8_t* nodeData = table.getPageAddress(pageNum);
+    Node node(nodeData);
+    
+    uint32_t minIndex = 0;
+    uint32_t onePastMaxIndex = *node.leafNodeNumCells();
+    while (minIndex < onePastMaxIndex) { 
+        uint32_t currentIndex = (minIndex + onePastMaxIndex) / 2;
+        uint32_t currentKey = *node.leafNodeKey(currentIndex);
+        if (currentKey == key) {
+            this->cellNum = currentIndex;
+            return;
+        } else if (currentKey < key) {
+            minIndex = currentIndex + 1;
+        } else {
+            onePastMaxIndex = currentIndex;
+        }
+    }
+
+    this->cellNum = minIndex;
+    return;
+}
 
 // Gives pointer in memory to row 
 void* Cursor::cursorSlot() {
