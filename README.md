@@ -1,29 +1,29 @@
-# SQL Liter
+# SQL Liter 🗃️
 
-A lightweight, from-scratch SQL database implementation in C++ featuring a B+ tree storage engine and REPL interface.
+A lightweight, from-scratch SQL database implementation in C++ featuring a B+ tree storage engine and interactive REPL interface.
 
 ## Overview
 
-SQL Liter is a educational database project that demonstrates core database concepts including storage management, indexing, and query processing. Built entirely from scratch without external database libraries, it showcases fundamental computer science principles in action.
+SQL Liter is a hands-on exploration of database internals, built entirely from scratch to understand how databases actually work under the hood. No external database libraries - just pure C++ implementing everything from page management to B+ tree indexing. 🚀
 
 ## Key Features
 
-### Storage Engine
+### 🌳 Storage Engine
 - **B+ Tree Implementation**: Efficient indexing with automatic node splitting and balancing
-- **Page-based Storage**: 4KB page management system with disk persistence
-- **Memory Management**: Custom pager with LRU-style caching and flush mechanisms
-- **ACID Properties**: Atomic operations with proper error handling
+- **Page-based Storage**: 4KB page management system with disk persistence  
+- **Memory Management**: Custom pager with intelligent caching and flush mechanisms
+- **Data Persistence**: Everything gets saved to disk, just like a real database!
 
-### Query Processing
-- **SQL Parser**: Tokenizer and statement processor for INSERT and SELECT operations
-- **REPL Interface**: Interactive command-line interface with meta-commands
+### 🔍 Query Processing
+- **SQL Parser**: Custom tokenizer and statement processor for INSERT and SELECT
+- **Interactive REPL**: Type commands and see results instantly
 - **Type System**: Structured row format with serialization/deserialization
-- **Error Handling**: Comprehensive validation and exception management
+- **Smart Error Handling**: Helpful error messages when things go wrong
 
-### Architecture Highlights
-- **Modular Design**: Clean separation between storage, indexing, and query layers
-- **Cursor-based Navigation**: Efficient tree traversal and positioning system
-- **Extensible Framework**: Well-structured codebase ready for additional SQL features
+### ⚡ Architecture Highlights
+- **Clean Design**: Modular components that work together seamlessly
+- **Cursor Navigation**: Efficient tree traversal and positioning system
+- **Extensible**: Well-structured foundation ready for more SQL features
 
 ## Technical Implementation
 
@@ -101,5 +101,3 @@ sql_liter/
 ├── CMakeLists.txt # Build configuration
 └── README.md      # This file
 ```
-
-This project demonstrates deep understanding of database internals, systems programming, and software architecture principles essential for backend engineering roles.
