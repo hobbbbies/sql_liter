@@ -11,7 +11,7 @@ Table::Table(std::string filename) {
     rootPageNum = 0;
 
     // Empty file ?
-    if (pager->getNumPages() == 0) {
+    if (pager->getUnusedPageNum() == 0) {
         uint8_t* node_data = pager->getPage(rootPageNum);
         Node node(node_data);
         node.initializeLeafNode();
@@ -49,23 +49,37 @@ void Table::insertRow(const Row& row) {
     node.leafNodeInsert(row.getId(), &row, cursor.getCellNum());
 }
 
-Row Table::getRow(uint32_t row_num) {
-    if (row_num >= num_rows) {
-        throw std::out_of_range("row_num exceeds num_rows");
+Row Table::getRow(uint32_t key) {    
+    Cursor cursor(*this, key);
+    
+    // Check if the key actually exists
+    uint8_t* nodeData = getPageAddress(rootPageNum);
+    Node node(nodeData);
+    uint32_t numCells = *node.leafNodeNumCells();
+    
+    // If cursor position is beyond valid cells, key doesn't exist
+    if (cursor.getCellNum() >= numCells) {
+        throw std::out_of_range("Key not found");
     }
     
-    Cursor cursor(*this, row_num);
+    // Check if the key at cursor position matches the requested key
+    uint32_t keyAtPosition = *node.leafNodeKey(cursor.getCellNum());
+    if (keyAtPosition != key) {
+        throw std::out_of_range("Key not found");
+    }
+    
     void* rowAddress = cursor.cursorSlot();        
     return Row::deserialize(rowAddress);
-}
+} 
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
     uint8_t* node_data = getPageAddress(rootPageNum);
     Node node(node_data);
     std::cout << "num cells: " << *node.leafNodeNumCells() << "\n";
-    if (*node.leafNodeNumCells() == LEAF_NODE_MAX_CELLS) {
-        return ExecuteResult::EXECUTE_TABLE_FULL;
-    }
+    // delete below soon 
+    // if (*node.leafNodeNumCells() == LEAF_NODE_MAX_CELLS) {
+    //     return ExecuteResult::EXECUTE_TABLE_FULL;
+    // }
 
     if (tokens.size() < 4) {
         return ExecuteResult::EXECUTE_FAILURE;
@@ -116,4 +130,10 @@ ExecuteResult Table::execute_select_all() {
 ExecuteResult Table::execute_select(const std::vector<std::string>&) {
     // Not implemented yet
     return ExecuteResult::EXECUTE_SUCCESS;
+}
+
+uint32_t Table::getNumRows() const {
+    uint8_t* node_data = getPageAddress(rootPageNum);
+    Node node(node_data);
+    return *node.leafNodeNumCells();
 }

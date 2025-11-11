@@ -26,6 +26,7 @@ TEST_F(TableTest, EmptyTableHasZeroRows) {
 TEST_F(TableTest, InsertSingleRow) {
     Row row(1, "john", "john@example.com");
     table->insertRow(row);
+
     
     EXPECT_EQ(table->getNumRows(), 1);
 }
@@ -34,7 +35,7 @@ TEST_F(TableTest, InsertAndRetrieveRow) {
     Row original(123, "bob", "bob@test.com");
     table->insertRow(original);
     
-    Row retrieved = table->getRow(0);
+    Row retrieved = table->getRow(123);
     
     EXPECT_EQ(retrieved.getId(), 123);
     EXPECT_STREQ(retrieved.getUsername(), "bob");
@@ -48,7 +49,7 @@ TEST_F(TableTest, InsertMultipleRows) {
     
     EXPECT_EQ(table->getNumRows(), 3);
     
-    Row second = table->getRow(1);
+    Row second = table->getRow(2);
     EXPECT_EQ(second.getId(), 2);
     EXPECT_STREQ(second.getUsername(), "bob");
 }
@@ -58,6 +59,6 @@ TEST_F(TableTest, GetRowOutOfBounds) {
     std::unique_ptr<Table> empty_table = std::make_unique<Table>("test2.txt");
     empty_table->insertRow(Row(1, "test", "test@example.com"));
 
-    EXPECT_THROW(empty_table->getRow(1), std::out_of_range);
+    EXPECT_THROW(empty_table->getRow(2), std::out_of_range);
     EXPECT_THROW(empty_table->getRow(100), std::out_of_range);
 }

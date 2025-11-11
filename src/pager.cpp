@@ -158,7 +158,3 @@ void Pager::flushAllPages(uint32_t numRows, uint32_t rowSize) {
         std::abort();          // Since this is called from destructor, we can't throw   
     }   
 }
-
-uint32_t Pager::getNumPages() {
-    return numPages;
-}
