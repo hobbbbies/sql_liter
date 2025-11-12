@@ -10,10 +10,15 @@ private:
     Table& table;
     uint32_t pageNum;
     uint32_t cellNum;
-    bool endOfTable;
+    bool endOfTable; 
 public:
-    Cursor(Table& table, uint32_t pageNum, uint32_t cellNum);
+    Cursor(Table& table, uint32_t key);
     ~Cursor();
     void* cursorSlot();
     void cursorAdvance();
+    uint32_t getCellNum() const { return cellNum; }
+    
+private:
+    void leafNodeFind(uint32_t key, uint32_t pageNum);
+    void leafNodeSplitAndInsert(uint32_t key, const Row* value);
 };

@@ -19,6 +19,7 @@ set(LIB_SOURCES
     src/utils.cpp
     src/pager.cpp
     src/cursor.cpp
+    src/node.cpp
 )
 
 # Create a library for the core functionality

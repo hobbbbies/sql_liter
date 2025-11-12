@@ -16,5 +16,11 @@ enum class PrepareResult {
 enum class ExecuteResult { 
     EXECUTE_SUCCESS, 
     EXECUTE_TABLE_FULL,
-    EXECUTE_FAILURE
+    EXECUTE_FAILURE,
+    EXECUTE_DUPLICATE_KEY
+};
+
+enum class NodeType {
+    NODE_INTERNAL,
+    NODE_LEAF
 };
