@@ -1,5 +1,0 @@
-if(EXISTS "/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/sql_liter_tests[1]_tests.cmake")
-  include("/Users/stefanvitanov/repos/Personal Projects/cpp/sql_liter/build/sql_liter_tests[1]_tests.cmake")
-else()
-  add_test(sql_liter_tests_NOT_BUILT sql_liter_tests_NOT_BUILT)
-endif()
