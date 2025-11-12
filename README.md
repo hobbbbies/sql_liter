@@ -1,4 +1,4 @@
-# SQL Liter 🗃️
+# SQL Liter 
 
 A lightweight, from-scratch SQL database implementation in C++ featuring a B+ tree storage engine and interactive REPL interface.
 
@@ -36,8 +36,8 @@ SQL Liter is a hands-on exploration of database internals, built entirely from s
 
 ### Supported Operations
 ```sql
-INSERT INTO table VALUES (id, username, email);
-SELECT * FROM table;
+insert <id> <username> <email>
+select
 .exit    -- Meta-command to exit
 .btree   -- Meta-command to visualize B+ tree structure
 ```
