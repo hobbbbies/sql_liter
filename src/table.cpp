@@ -37,16 +37,22 @@ void Table::insertRow(const Row& row) {
     Node node(nodeData);
     Cursor cursor(*this, row.getId());
     
-    // Check if we're inserting at a position with existing cells
+    // numCells will include the new node to be inserted ?
     uint32_t numCells = *node.leafNodeNumCells();
+    
+    if (*node.leafNodeNumCells() >= LEAF_NODE_MAX_CELLS) {
+        leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum()); 
+        return;   
+    }
+    
+    // Check if we're inserting at a position with existing cells
     if (cursor.getCellNum() < numCells) {
         uint32_t keyAtPosition = *node.leafNodeKey(cursor.getCellNum());
         if (keyAtPosition == row.getId()) {
             throw std::invalid_argument("Duplicate key");
-        }
-    }
-    
-    node.leafNodeInsert(row.getId(), &row, cursor.getCellNum());
+        }        
+    } 
+    node.leafNodeInsert(row.getId(), &row, cursor.getCellNum());    
 }
 
 Row Table::getRow(uint32_t key) {    
@@ -136,4 +142,93 @@ uint32_t Table::getNumRows() const {
     uint8_t* node_data = getPageAddress(rootPageNum);
     Node node(node_data);
     return *node.leafNodeNumCells();
+}
+
+// should only call this after insertRow
+// void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNum) {
+//     // left node
+//     uint8_t* oldNodeData = getPageAddress(rootPageNum);
+//     Node oldNode(oldNodeData);
+
+//     // right node 
+//     uint32_t newPageNum = getUnusedPageNum();
+//     uint8_t* newNodeData = getPageAddress(newPageNum);
+//     Node newNode(newNodeData);
+//     newNode.initializeLeafNode();
+
+//     for (uint32_t i = LEAF_NODE_MAX_CELLS; i > 0; i--) {
+//         Node* temp;
+//         // if else block to find which node to use (left or right)
+//         if (i >= LEAF_NODE_LEFT_SPLIT_COUNT) {
+//             temp = &oldNode;
+//         } else {
+//             temp = &newNode;
+//         }
+
+//         uint32_t localIndex = i % LEAF_NODE_LEFT_SPLIT_COUNT;
+//         void* destinationCell = temp->leafNodeCell(localIndex);
+
+//         if (i == cellNum) { // insertion position for i
+//             temp->leafNodeInsert(key, value, localIndex);
+//         } 
+//         // else if index is greater than insertion pos, 
+//         // move node up one position to make space for new cell
+//         else if (i > cellNum) {
+//             uint32_t currentKey = *temp->leafNodeKey(i-1);
+//             const void* currentValue = temp->leafNodeValue(i-1);
+//             temp->leafNodeInsert(currentKey, &Row::deserialize(currentValue), localIndex);
+//         } 
+//         // else just copy the node over 
+//         // may be redundant if temp == oldNode
+//         else {
+//             uint32_t currentKey = *temp->leafNodeKey(i);
+//             const void* currentValue = temp->leafNodeValue(i);
+//             temp->leafNodeInsert(currentKey, &Row::deserialize(currentValue), localIndex);
+//         }
+//     }
+//     // update cell count of both nodes
+//     *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
+//     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
+// }
+
+void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt) {
+    // left node
+    uint8_t* oldNodeData = getPageAddress(rootPageNum);
+    Node oldNode(oldNodeData);
+
+    // right node 
+    uint32_t newPageNum = getUnusedPageNum();
+    uint8_t* newNodeData = getPageAddress(newPageNum);
+    Node newNode(newNodeData);
+    newNode.initializeLeafNode();
+
+    // copy all cells to vector (holds key value pair)
+    std::vector<std::pair<uint32_t, Row>> allCells;
+
+    // fill out vector
+    uint32_t numExistingCells = *oldNode.leafNodeNumCells();
+    for (uint32_t i = 0; i < numExistingCells; i++) {
+        uint32_t node_key = *oldNode.leafNodeKey(i);
+        Row node_row = Row::deserialize(oldNode.leafNodeValue(i));
+        allCells.emplace_back(node_key, node_row);
+    }
+    // insert new cell
+    allCells.emplace(allCells.begin() + cellNumToInsertAt, key, *value);
+
+    // fill left node
+    for (uint32_t i = 0; i < LEAF_NODE_LEFT_SPLIT_COUNT; i++) {
+        *oldNode.leafNodeKey(i) = allCells[i].first;
+        allCells[i].second.serialize(oldNode.leafNodeValue(i));
+    } 
+
+    // fill right node
+    for (uint32_t i = 0; i < LEAF_NODE_RIGHT_SPLIT_COUNT; i++) {
+        uint32_t globalIndex = LEAF_NODE_LEFT_SPLIT_COUNT + i;
+        *newNode.leafNodeKey(i) = allCells[globalIndex].first;
+        allCells[globalIndex].second.serialize(newNode.leafNodeValue(i));
+    }
+
+    // update cell count of both nodes
+    *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
+    *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
 }

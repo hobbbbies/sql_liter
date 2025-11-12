@@ -26,7 +26,7 @@ void Node::initializeLeafNode() {
 void Node::leafNodeInsert(uint32_t key, const Row* value, uint32_t cellNum) {    
     // split here 
     if (cellNum >= LEAF_NODE_MAX_CELLS) {
-        throw std::out_of_range("Cell number exceeds maximum cells");
+        throw std::out_of_range("Cell number exceeds maximum cells - Make call to split first");
     }
 
     uint32_t numCells = *leafNodeNumCells();

@@ -13,7 +13,7 @@
 class Table {
 private:
     Pager* pager;
-    uint32_t rootPageNum;
+    uint32_t rootPageNum; // root node key
     uint32_t num_rows = 0; // TO BE REMOVED
 
 public:
@@ -25,7 +25,9 @@ public:
     uint32_t getRootPageNum() const { return rootPageNum; }
     void insertRow(const Row& row);
     Row getRow(uint32_t key);
+    void leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt);
     uint32_t getUnusedPageNum() const { return pager->getNumPages(); }
+    uint32_t getNumRows() const;
 
     ExecuteResult execute_insert(const std::vector<std::string> tokens);
     ExecuteResult execute_select_all();

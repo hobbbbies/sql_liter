@@ -62,3 +62,11 @@ TEST_F(TableTest, GetRowOutOfBounds) {
     EXPECT_THROW(empty_table->getRow(2), std::out_of_range);
     EXPECT_THROW(empty_table->getRow(100), std::out_of_range);
 }
+
+// leafNodeSplit
+TEST_F(CursorTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
+    
+}
+
+TEST_F(CursorTest, NumPagesIs2AfterSplit) {
+}
