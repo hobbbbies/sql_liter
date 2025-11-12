@@ -21,11 +21,11 @@ public:
     ~Table();
     
     uint8_t* getPageAddress(uint32_t pageNum) const;
-    uint32_t getNumRows() const;  
     void incrementRows() { ++num_rows; }
     uint32_t getRootPageNum() const { return rootPageNum; }
     void insertRow(const Row& row);
     Row getRow(uint32_t key);
+    uint32_t getUnusedPageNum() const { return pager->getNumPages(); }
 
     ExecuteResult execute_insert(const std::vector<std::string> tokens);
     ExecuteResult execute_select_all();

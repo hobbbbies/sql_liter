@@ -47,7 +47,7 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
 
 void Cursor::leafNodeSplitAndInsert(uint32_t key, const Row* value) {
     // left node
-    uint8_t oldNodeData = table.getPageAddress(pageNum);
+    uint8_t* oldNodeData = table.getPageAddress(pageNum);
     Node oldNode(oldNodeData);
 
     // right node 
@@ -57,35 +57,38 @@ void Cursor::leafNodeSplitAndInsert(uint32_t key, const Row* value) {
     newNode.initializeLeafNode();
 
     for (uint32_t i = LEAF_NODE_MAX_CELLS; i > 0; i--) {
-        Node temp;
+        Node* temp;
         // if else block to find which node to use (left or right)
         if (i >= LEAF_NODE_LEFT_SPLIT_COUNT) {
-            temp = oldNode;
+            temp = &oldNode;
         } else {
-            temp = newNode;
+            temp = &newNode;
         }
 
         uint32_t localIndex = i % LEAF_NODE_LEFT_SPLIT_COUNT;
-        void* destinationCell = temp.leafNodeCell(localIndex);
+        void* destinationCell = temp->leafNodeCell(localIndex);
 
         if (i == cellNum) { // insertion position for i
-            temp.leafNodeInsert(key, value, localIndex);
+            temp->leafNodeInsert(key, value, localIndex);
         } 
         // else if index is greater than insertion pos, 
         // move node up one position to make space for new cell
         else if (i > cellNum) {
-            uint32_t currentKey = *node.leafNodeKey(i-1);
-            const Row* currentValue = node.leafNodeValue(i-1);
-            temp.leafNodeInsert(currentKey, currentValue, localIndex);
+            uint32_t currentKey = *temp->leafNodeKey(i-1);
+            const void* currentValue = temp->leafNodeValue(i-1);
+            temp->leafNodeInsert(currentKey, &Row::deserialize(currentValue), localIndex);
         } 
         // else just copy the node over 
         // may be redundant if temp == oldNode
         else {
-            uint32_t currentKey = *node.leafNodeKey(i);
-            const Row* currentValue = node.leafNodeValue(i);
-            temp.leafNodeInsert(currentKey, currentValue, localIndex);
+            uint32_t currentKey = *temp->leafNodeKey(i);
+            const void* currentValue = temp->leafNodeValue(i);
+            temp->leafNodeInsert(currentKey, &Row::deserialize(currentValue), localIndex);
         }
-        
+
+        // update cell count of both nodes
+        *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
+        *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
     }
 }
 

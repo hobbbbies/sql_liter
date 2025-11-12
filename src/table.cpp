@@ -11,7 +11,7 @@ Table::Table(std::string filename) {
     rootPageNum = 0;
 
     // Empty file ?
-    if (pager->getUnusedPageNum() == 0) {
+    if (pager->getNumPages() == 0) {
         uint8_t* node_data = pager->getPage(rootPageNum);
         Node node(node_data);
         node.initializeLeafNode();
