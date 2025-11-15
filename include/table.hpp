@@ -28,6 +28,7 @@ public:
     void leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt);
     uint32_t getUnusedPageNum() const { return pager->getNumPages(); }
     uint32_t getNumRows() const;
+    void createNewRoot(uint32_t rightChildPageNum);
 
     ExecuteResult execute_insert(const std::vector<std::string> tokens);
     ExecuteResult execute_select_all();

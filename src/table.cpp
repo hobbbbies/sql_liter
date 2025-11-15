@@ -231,4 +231,51 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     // update cell count of both nodes
     *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
+
+    // stubs below
+    if (oldNode.isRootNode()) {
+        return createNewRoot(newPageNum);
+    } else {
+        std::cout << "implement updating paretn after splitting\n";
+        exit(EXIT_FAILURE);
+    }
+}
+
+// Creates new root (after allocating and splitting to right node)
+// and sets left and right node as children of new root 
+
+// should this be switched to non sequential storage?
+void Table::createNewRoot(uint32_t rightChildPageNum) {
+    // Get the old root (which will become the left child)
+    uint8_t* rootData = getPageAddress(rootPageNum);
+    Node root(rootData);
+    
+    uint8_t* rightChildData = getPageAddress(rightChildPageNum);
+    Node rightChild(rightChildData);
+    
+    // Allocate a new page for the left child
+    uint32_t leftChildPageNum = getUnusedPageNum();
+    uint8_t* leftChildData = getPageAddress(leftChildPageNum);
+    
+    // Copy the old root's entire page to the left child
+    memcpy(leftChildData, rootData, PAGE_SIZE);
+    
+    Node leftChild(leftChildData);
+    leftChild.setNodeRoot(false);
+    
+    // Now transform the old root page into an internal node
+    root.initializeInternalNode();
+    root.setNodeRoot(true);
+    *root.internalNodeNumKeys() = 1;
+    
+    // Set up the internal node structure
+    *root.internalNodeChild(0) = leftChildPageNum;
+    uint32_t leftChildMaxKey = leftChild.getNodeMaxKey();
+    *root.internalNodeKey(0) = leftChildMaxKey;  // ← Fixed: dereference
+    *root.internalNodeRightChild() = rightChildPageNum;
+    
+    // Update parent pointers in both children
+    // (You'll need to implement setParentPointer if not already done)
+    // leftChild.setParentPointer(rootPageNum);
+    // rightChild.setParentPointer(rootPageNum);
 }
