@@ -4,6 +4,7 @@
 #include <cstdint>
 #include "row.hpp"
 #include "enums.hpp"
+#include "table.hpp"
 
 class Node {
 private:
@@ -21,6 +22,7 @@ public:
     void printLeafNode();
     
     // Internal Node methods 
+    // all uint32_t* returns represent page numbers
     uint32_t* internalNodeNumKeys();
     uint32_t* internalNodeRightChild();
     uint32_t* internalNodeCell(uint32_t cellNum);
@@ -36,4 +38,8 @@ public:
     void setNodeType(NodeType type);
     bool isRootNode();
     void setNodeRoot(bool isRoot);
+
+    // print methods
+    void indent(uint32_t level);
+    void printTree(Table& table, uint32_t rootPageNum, uint32_t indentationLevel = 0);
 };

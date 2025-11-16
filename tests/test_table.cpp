@@ -2,6 +2,7 @@
 #include "table.hpp"
 #include "row.hpp"
 #include <cstdio>
+#include "node.hpp"
 
 class TableTest : public ::testing::Test {
 protected:
@@ -64,9 +65,56 @@ TEST_F(TableTest, GetRowOutOfBounds) {
 }
 
 // leafNodeSplit
-TEST_F(CursorTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
-    
+TEST_F(TableTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    EXPECT_EQ(table->getNumRows(), LEAF_NODE_MAX_CELLS);
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_LEAF);
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_INTERNAL);    
 }
 
-TEST_F(CursorTest, NumPagesIs2AfterSplit) {
+TEST_F(TableTest, NumPagesIs3AfterSplit) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    EXPECT_EQ(table->getUnusedPageNum(), 1);
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    EXPECT_EQ(table->getUnusedPageNum(), 3);
+}
+
+TEST_F(TableTest, NewRootPointsToCorrectChildren) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    // because right child is created before left childs new position
+    EXPECT_EQ(*rootNode.internalNodeChild(0), 2);
+    EXPECT_EQ(*rootNode.internalNodeChild(1), 1);
+}
+
+TEST_F(TableTest, NewRootHasCorrectNumKeys) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    EXPECT_EQ(*rootNode.internalNodeNumKeys(), 1); 
+}
+
+TEST_F(TableTest, InsertionPastMaxCellsDoesNotCrash) {
+    // 15 insertions
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS + 1, "test", "test@example.com"));    
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS + 2, "test", "test@example.com"));    
+    EXPECT_EQ(table->getUnusedPageNum(), 3);
 }

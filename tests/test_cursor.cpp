@@ -119,3 +119,23 @@ TEST_F(CursorTest, CursorAdvanceIncrementsRowNum) {
     uint8_t* expectedSlot1 = page0 + Row::getRowSize();
     EXPECT_EQ(slot1, expectedSlot1);
 }
+
+// TEST_F(CursorTest, CursorFindsKeyFromInternalNode) {
+//     table->insertRow(1);
+//     table->insertRow(2);
+//     table->insertRow(3);
+//     table->insertRow(4);
+//     table->insertRow(5);
+//     table->insertRow(6);
+//     table->insertRow(7);
+//     table->insertRow(8);
+//     table->insertRow(9);
+//     table->insertRow(10);
+//     table->insertRow(11);
+//     table->insertRow(12);
+//     table->insertRow(13);
+//     table->insertRow(14);
+//     table->insertRow(15);
+//     Cursor cursor(*table, 0);
+    
+// }

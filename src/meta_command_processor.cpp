@@ -36,7 +36,7 @@ MetaCommandProcessor::MetaCommandProcessor() {
         std::cout << "Tree:\n";
         uint8_t* nodeData = table->getPageAddress(table->getRootPageNum());
         Node node(nodeData);
-        node.printLeafNode();
+        node.printTree(*table, table->getRootPageNum());
         return MetaCommandResult::META_COMMAND_SUCCESS;
     };
 }

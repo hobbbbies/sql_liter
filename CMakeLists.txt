@@ -59,6 +59,7 @@ set(TEST_SOURCES
     tests/test_input_integration.cpp
     tests/test_pager.cpp
     tests/test_cursor.cpp
+    tests/test_node.cpp
 )
 
 # Test executable

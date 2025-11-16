@@ -12,7 +12,7 @@ Cursor::Cursor(Table& table, uint32_t key) : table(table), endOfTable(false) {
     if (nodeType == NodeType::NODE_LEAF) {
         leafNodeFind(key, rootPageNum);
     } else {
-        // stub for internal nodes
+        internalNodeFind(key, rootPageNum);
     }
 }
 
@@ -28,6 +28,7 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
     
     uint32_t minIndex = 0;
     uint32_t onePastMaxIndex = *node.leafNodeNumCells();
+    // binary search inside of leaf node to find key OR insertion position
     while (minIndex < onePastMaxIndex) { 
         uint32_t currentIndex = (minIndex + onePastMaxIndex) / 2;
         uint32_t currentKey = *node.leafNodeKey(currentIndex);
@@ -43,6 +44,36 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
 
     // if key is not found, cellNum will point to its insertion position; follows BST property
     this->cellNum = minIndex;
+}
+
+void Cursor::internalNodeFind(uint32_t key, uint32_t pageNum) {
+    std::cout << "Executing internalNodefind for key: " << key << "\n";
+    // create node from pagNum
+    uint8_t* nodeData = table.getPageAddress(pageNum);
+    Node node(nodeData);
+    
+    // binary search to find index of child node 
+    uint32_t minIndex = 0;
+    uint32_t maxIndex = *node.internalNodeNumKeys();
+    while (minIndex < maxIndex) { 
+        uint32_t currentIndex = (minIndex + maxIndex) / 2;
+        uint32_t keyToRight = *node.internalNodeKey(currentIndex);
+        if (keyToRight >= key) {
+            maxIndex = currentIndex;
+        } else {
+            minIndex = currentIndex + 1;
+        }
+    }
+    
+    // call search function on found node
+    uint32_t childPageNum = *node.internalNodeChild(minIndex);
+    uint8_t* childData = table.getPageAddress(childPageNum);
+    Node childNode(childData);
+    if (childNode.getNodeType() == NodeType::NODE_LEAF) {
+        leafNodeFind(key, childPageNum);
+    } else {
+        internalNodeFind(key, childPageNum);
+    }
 }
 
 // Gives pointer in memory to row 

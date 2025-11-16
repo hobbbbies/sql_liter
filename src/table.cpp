@@ -15,6 +15,7 @@ Table::Table(std::string filename) {
         uint8_t* node_data = pager->getPage(rootPageNum);
         Node node(node_data);
         node.initializeLeafNode();
+        node.setNodeRoot(true);
     }
 }
 
@@ -35,6 +36,8 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
 void Table::insertRow(const Row& row) {
     uint8_t* nodeData = getPageAddress(rootPageNum);
     Node node(nodeData);
+    
+    // should get insertion position
     Cursor cursor(*this, row.getId());
     
     // numCells will include the new node to be inserted ?
@@ -144,53 +147,6 @@ uint32_t Table::getNumRows() const {
     return *node.leafNodeNumCells();
 }
 
-// should only call this after insertRow
-// void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNum) {
-//     // left node
-//     uint8_t* oldNodeData = getPageAddress(rootPageNum);
-//     Node oldNode(oldNodeData);
-
-//     // right node 
-//     uint32_t newPageNum = getUnusedPageNum();
-//     uint8_t* newNodeData = getPageAddress(newPageNum);
-//     Node newNode(newNodeData);
-//     newNode.initializeLeafNode();
-
-//     for (uint32_t i = LEAF_NODE_MAX_CELLS; i > 0; i--) {
-//         Node* temp;
-//         // if else block to find which node to use (left or right)
-//         if (i >= LEAF_NODE_LEFT_SPLIT_COUNT) {
-//             temp = &oldNode;
-//         } else {
-//             temp = &newNode;
-//         }
-
-//         uint32_t localIndex = i % LEAF_NODE_LEFT_SPLIT_COUNT;
-//         void* destinationCell = temp->leafNodeCell(localIndex);
-
-//         if (i == cellNum) { // insertion position for i
-//             temp->leafNodeInsert(key, value, localIndex);
-//         } 
-//         // else if index is greater than insertion pos, 
-//         // move node up one position to make space for new cell
-//         else if (i > cellNum) {
-//             uint32_t currentKey = *temp->leafNodeKey(i-1);
-//             const void* currentValue = temp->leafNodeValue(i-1);
-//             temp->leafNodeInsert(currentKey, &Row::deserialize(currentValue), localIndex);
-//         } 
-//         // else just copy the node over 
-//         // may be redundant if temp == oldNode
-//         else {
-//             uint32_t currentKey = *temp->leafNodeKey(i);
-//             const void* currentValue = temp->leafNodeValue(i);
-//             temp->leafNodeInsert(currentKey, &Row::deserialize(currentValue), localIndex);
-//         }
-//     }
-//     // update cell count of both nodes
-//     *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
-//     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
-// }
-
 void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt) {
     // left node
     uint8_t* oldNodeData = getPageAddress(rootPageNum);
@@ -232,7 +188,7 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
 
-    // stubs below
+    std::cout << "Old node is root?: " << oldNode.isRootNode() << "\n";
     if (oldNode.isRootNode()) {
         return createNewRoot(newPageNum);
     } else {

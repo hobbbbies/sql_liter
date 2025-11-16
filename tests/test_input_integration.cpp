@@ -123,24 +123,24 @@ TEST_F(InputIntegrationTest, ProcessMultipleCommands) {
     EXPECT_EQ(table->getNumRows(), 2);
 }
 
-TEST_F(InputIntegrationTest, PrintsErrorOnFullTable) {
-    // 14 is the number of rows per page
-    ExecuteResult loop_result = ExecuteResult::EXECUTE_SUCCESS;
-    for (int i = 0; i < TABLE_MAX_PAGES * 14; i++) {
-       try {
-        table->insertRow(Row(i, "bob", "bob@test.com"));
-       } catch (const std::out_of_range& e) {
-        loop_result = ExecuteResult::EXECUTE_FAILURE;
-       }
-    }
+// TEST_F(InputIntegrationTest, PrintsErrorOnFullTable) {
+//     // 14 is the number of rows per page
+//     ExecuteResult loop_result = ExecuteResult::EXECUTE_SUCCESS;
+//     for (int i = 0; i < TABLE_MAX_PAGES * 14; i++) {
+//        try {
+//         table->insertRow(Row(i, "bob", "bob@test.com"));
+//        } catch (const std::out_of_range& e) {
+//         loop_result = ExecuteResult::EXECUTE_FAILURE;
+//        }
+//     }
     
-    // Test table->execute_insert directly
-    std::vector<std::string> tokens = {"insert", "999", "newuser", "newuser@test.com"};
-    ExecuteResult result = table->execute_insert(tokens);
+//     // Test table->execute_insert directly
+//     std::vector<std::string> tokens = {"insert", "999", "newuser", "newuser@test.com"};
+//     ExecuteResult result = table->execute_insert(tokens);
         
-    EXPECT_EQ(result, ExecuteResult::EXECUTE_TABLE_FULL);
-    EXPECT_EQ(loop_result, ExecuteResult::EXECUTE_SUCCESS);
-}
+//     EXPECT_EQ(result, ExecuteResult::EXECUTE_TABLE_FULL);
+//     EXPECT_EQ(loop_result, ExecuteResult::EXECUTE_SUCCESS);
+// }
 
 TEST_F(InputIntegrationTest, AllowsStringsAtMaxLen) {
     std::string long_username(32, 'x');

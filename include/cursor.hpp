@@ -20,4 +20,5 @@ public:
     
 private:
     void leafNodeFind(uint32_t key, uint32_t pageNum);
+    void internalNodeFind(uint32_t key, uint32_t pageNum);
 };
