@@ -60,12 +60,9 @@ TEST_F(NodeTest, LeafNodeInsertSingleCell) {
     EXPECT_EQ(*node->leafNodeKey(0), 1);
     
     // Deserialize and verify
-    Row retrieved;
-    retrieved.deserialize(node->leafNodeValue(0));
+    Row retrieved = Row::deserialize(node->leafNodeValue(0));
     EXPECT_EQ(retrieved.getId(), 1);
-    std::cout << "retrieved username: " << retrieved.getUsername() << std::endl;
     EXPECT_EQ(retrieved.getUsername(), "alice");
-    std::cout << "retrieved email: " << retrieved.getEmail() << std::endl;
     EXPECT_EQ(retrieved.getEmail(), "alice@example.com");
 }
 

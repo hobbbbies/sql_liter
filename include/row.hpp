@@ -30,6 +30,7 @@ public:
 
     static constexpr uint32_t getRowSize() { return ROW_SIZE; }
     uint32_t getId() const { return id; }
-    const char* getUsername() const { return username; }
+    // const char* getUsername() const { return username; }
+    const char* getUsername() const;
     const char* getEmail() const { return email; }
 };

@@ -27,9 +27,16 @@ Row Row::deserialize(const void* source) {
     std::memcpy(&row.id, static_cast<const char*>(source) + ID_OFFSET, ID_SIZE);
     std::memcpy(row.username, static_cast<const char*>(source) + USERNAME_OFFSET, USERNAME_SIZE);
     std::memcpy(row.email, static_cast<const char*>(source) + EMAIL_OFFSET, EMAIL_SIZE);
+    std::cout << "username inside of deserialize:  " << row.username << "\n";
     return row;
 }
 
 void Row::printRow() const {
     std::cout << "(" << id << ", " << email << ", " << username << ")\n";
 }
+
+const char* Row::getUsername() const {
+    std::cout << "username inside of getUsername:  " << username << "\n";
+    return username;
+}
+
