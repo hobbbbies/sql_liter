@@ -34,21 +34,25 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
 }
 
 // this is where its breaking
-// can't do leafnode operations on internal node 
+// can't do leafnode operations on internal node ???
 void Table::insertRow(const Row& row) {
-    uint8_t* nodeData = getPageAddress(rootPageNum);
-    Node node(nodeData);
-    
-    // should get insertion position
+    // should get insertion position for new node 
+    // cursor will point to correct node AND cell position
+    std::cout << "Executing internalNodefind for key: " << row.getId() << "\n";
     Cursor cursor(*this, row.getId());
-    
-    // numCells will include the new node to be inserted ?
+    // then we create a node from the page data for node operations
+    uint8_t* nodeData = getPageAddress(cursor.getPageNum());
+    std::cout << "nodeDataaaaa: " << nodeData << "\n";
+    Node node(nodeData);
+    // numCells will include the new node to be inserted 
     uint32_t numCells = *node.leafNodeNumCells();
-    
-    if (*node.leafNodeNumCells() >= LEAF_NODE_MAX_CELLS) {
-        leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum()); 
+    std::cout << "numCellsssss: " << numCells << "\n";
+
+    if (numCells >= LEAF_NODE_MAX_CELLS) {
+        leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), nodeData); 
         return;   
     }
+    std::cout << "if skipped \n";
     
     // Check if we're inserting at a position with existing cells
     if (cursor.getCellNum() < numCells) {
@@ -149,9 +153,9 @@ uint32_t Table::getNumRows() const {
     return *node.leafNodeNumCells();
 }
 
-void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt) {
+void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt, uint8_t* oldNodeData) {
+    std::cout << "Executing leafNodeSplitAndInsert for key: " << key << "\n";
     // left node
-    uint8_t* oldNodeData = getPageAddress(rootPageNum);
     Node oldNode(oldNodeData);
 
     // right node 
@@ -160,19 +164,30 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     Node newNode(newNodeData);
     newNode.initializeLeafNode();
 
+    std::cout << "newPageNum: " << newPageNum << "\n";
     // copy all cells to vector (holds key value pair)
     std::vector<std::pair<uint32_t, Row>> allCells;
 
     // fill out vector
     uint32_t numExistingCells = *oldNode.leafNodeNumCells();
+    std::cout << "numExistingCells: " << numExistingCells << "\n";
     for (uint32_t i = 0; i < numExistingCells; i++) {
+        std::cout << "vector loop at index " << i << "\n";
         uint32_t node_key = *oldNode.leafNodeKey(i);
+        std::cout << "node_key: " << node_key << "\n";
         Row node_row = Row::deserialize(oldNode.leafNodeValue(i));
+        std::cout << "node_row id: " << node_row.getId() << "\n";
         allCells.emplace_back(node_key, node_row);
+        std::cout << "crashing after emplace back?\n";
     }
     // insert new cell
     allCells.emplace(allCells.begin() + cellNumToInsertAt, key, *value);
+    std::cout << "crashing after outside emplace back?\n";
 
+    std::cout << "filled out vector \n";
+    for (uint32_t i = 0; i < allCells.size(); i++) {
+        std::cout << "key: " << allCells[i].first << "\n";
+    }
     // fill left node
     for (uint32_t i = 0; i < LEAF_NODE_LEFT_SPLIT_COUNT; i++) {
         *oldNode.leafNodeKey(i) = allCells[i].first;
@@ -195,7 +210,6 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
         return createNewRoot(newPageNum);
     } else {
         std::cout << "implement updating paretn after splitting\n";
-        exit(EXIT_FAILURE);
     }
 }
 

@@ -25,7 +25,7 @@ public:
     uint32_t getRootPageNum() const { return rootPageNum; }
     void insertRow(const Row& row);
     Row getRow(uint32_t key);
-    void leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt);
+    void leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt, uint8_t* oldNodeData);
     uint32_t getUnusedPageNum() const { return pager->getNumPages(); }
     uint32_t getNumRows() const;
     void createNewRoot(uint32_t rightChildPageNum);

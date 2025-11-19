@@ -108,13 +108,17 @@ TEST_F(TableTest, NewRootHasCorrectNumKeys) {
     EXPECT_EQ(*rootNode.internalNodeNumKeys(), 1); 
 }
 
+// ensures node split works 
 TEST_F(TableTest, InsertionPastMaxCellsDoesNotCrash) {
     // 15 insertions
     for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
         table->insertRow(Row(i, "test", "test@example.com"));
     }
+    std::cout << "seg fault?\n";
     table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    std::cout << "seg fault?\n";
     table->insertRow(Row(LEAF_NODE_MAX_CELLS + 1, "test", "test@example.com"));    
+    std::cout << "seg fault?\n";
     table->insertRow(Row(LEAF_NODE_MAX_CELLS + 2, "test", "test@example.com"));    
     EXPECT_EQ(table->getUnusedPageNum(), 3);
 }

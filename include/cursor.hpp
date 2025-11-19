@@ -17,7 +17,7 @@ public:
     void* cursorSlot();
     void cursorAdvance();
     uint32_t getCellNum() const { return cellNum; }
-    
+    uint32_t getPageNum() const { return pageNum; }
 private:
     void leafNodeFind(uint32_t key, uint32_t pageNum);
     void internalNodeFind(uint32_t key, uint32_t pageNum);
