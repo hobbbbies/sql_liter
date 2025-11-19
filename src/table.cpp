@@ -33,6 +33,8 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
     return pager->getPage(pageNum);
 }
 
+// this is where its breaking
+// can't do leafnode operations on internal node 
 void Table::insertRow(const Row& row) {
     uint8_t* nodeData = getPageAddress(rootPageNum);
     Node node(nodeData);
@@ -213,6 +215,13 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     uint32_t leftChildPageNum = getUnusedPageNum();
     uint8_t* leftChildData = getPageAddress(leftChildPageNum);
     
+    std::cout << "--------------------------\n";
+    std::cout << "All page nums: \n";
+    std::cout << "rootPageNum: " << rootPageNum << "\n";
+    std::cout << "leftChildPageNum: " << leftChildPageNum << "\n";
+    std::cout << "rightChildPageNum: " << rightChildPageNum << "\n";
+    std::cout << "--------------------------\n";
+
     // Copy the old root's entire page to the left child
     memcpy(leftChildData, rootData, PAGE_SIZE);
     
@@ -230,6 +239,11 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     *root.internalNodeKey(0) = leftChildMaxKey;  // ← Fixed: dereference
     *root.internalNodeRightChild() = rightChildPageNum;
     
+    std::cout << "Root internalNodeChildren: " << *root.internalNodeChild(0) << "\n";
+    std::cout << "Root internalNodeKeys: " << *root.internalNodeKey(0) << "\n";
+    std::cout << "Root internalNodeRightChild: " << *root.internalNodeKey(1) << "\n";
+    std::cout << "--------------------------\n";
+
     // Update parent pointers in both children
     // (You'll need to implement setParentPointer if not already done)
     // leftChild.setParentPointer(rootPageNum);

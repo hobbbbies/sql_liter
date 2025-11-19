@@ -185,3 +185,17 @@ TEST_F(InputIntegrationTest, KeepsDataAfterClosingConnection) {
     EXPECT_STREQ(retrieved.getUsername(), "stefan");
     EXPECT_STREQ(retrieved.getEmail(), "stefan@example.com");
 }
+
+TEST_F(InputIntegrationTest, bTreeOutput) {
+    std::string command = "insert 0 stefan stefan@example.com";
+    PrepareResult result = processor->execute(command);
+    EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
+    for (int i = 1; i < LEAF_NODE_MAX_CELLS + 2; i++) {
+        std::string command = "insert " + std::to_string(i) + " stefan stefan@example.com";
+        processor->execute(command);
+    }
+    MetaCommandResult meta_result = meta_processor->execute(".btree", table.get());
+    std::cout << "Meta command result: " << static_cast<int>(meta_result) << "\n";
+    EXPECT_EQ(meta_result, MetaCommandResult::META_COMMAND_SUCCESS);
+}
+    

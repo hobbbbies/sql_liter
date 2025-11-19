@@ -62,8 +62,8 @@ TEST_F(NodeTest, LeafNodeInsertSingleCell) {
     // Deserialize and verify
     Row retrieved = Row::deserialize(node->leafNodeValue(0));
     EXPECT_EQ(retrieved.getId(), 1);
-    EXPECT_EQ(retrieved.getUsername(), "alice");
-    EXPECT_EQ(retrieved.getEmail(), "alice@example.com");
+    EXPECT_STREQ(retrieved.getUsername(), "alice");
+    EXPECT_STREQ(retrieved.getEmail(), "alice@example.com");
 }
 
 TEST_F(NodeTest, LeafNodeInsertMultipleCells) {

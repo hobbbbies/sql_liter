@@ -83,6 +83,8 @@ void Node::printTree(Table& table, uint32_t rootPageNum, uint32_t indentationLev
             std::cout << "- internal (size " << numKeys << ")\n";
             for (uint32_t i = 0; i < numKeys; i++) {
                 uint32_t childPageNum = *node.internalNodeChild(i);
+                std::cout << "child page num: " << childPageNum << "\n";
+                std::cout << "index: " << i << "\n";
                 indent(indentationLevel + 1);
                 std::cout << "- child " << i << " (page " << childPageNum << "):\n";
                 node.printTree(table, childPageNum, indentationLevel + 2);
@@ -93,6 +95,7 @@ void Node::printTree(Table& table, uint32_t rootPageNum, uint32_t indentationLev
             }
             // print rightmost child
             uint32_t rightChildPageNum = *node.internalNodeRightChild();
+            std::cout << "right child page num: " << rightChildPageNum << "\n";
             indent(indentationLevel + 1);
             std::cout << "- child " << numKeys << " (page " << rightChildPageNum << "):\n";
             node.printTree(table, rightChildPageNum, indentationLevel + 2);
@@ -134,6 +137,8 @@ uint32_t* Node::internalNodeCell(uint32_t cellNum) {
 // returns pointer to child node cell
 uint32_t* Node::internalNodeChild(uint32_t childNum) {
     uint32_t numKeys = *internalNodeNumKeys();
+    std::cout << "numKeys: " << numKeys << "\n";
+    std::cout << "childNum: " << childNum << "\n";
     if (childNum > numKeys) {
         throw std::out_of_range("Tried to access child_num " + std::to_string(childNum) + " > num_keys " + std::to_string(numKeys));
     } else if (childNum == numKeys) {
