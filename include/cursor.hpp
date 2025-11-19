@@ -18,6 +18,7 @@ public:
     void cursorAdvance();
     uint32_t getCellNum() const { return cellNum; }
     uint32_t getPageNum() const { return pageNum; }
+    bool isEndOfTable() const { return endOfTable; }
 private:
     void leafNodeFind(uint32_t key, uint32_t pageNum);
     void internalNodeFind(uint32_t key, uint32_t pageNum);

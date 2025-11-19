@@ -36,7 +36,6 @@ public:
 
         statements["select"] = [this](const std::string& fullCommand) {
             table.execute_select_all();
-            std::cout << "Full command: " << fullCommand << "\n";
             return PrepareResult::PREPARE_SUCCESS;
         };
     }

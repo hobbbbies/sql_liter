@@ -122,15 +122,37 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
     }
 }
 
+// ExecuteResult Table::OLD_execute_select_all() {
+//     try {
+//         for (uint32_t i = 0; i < num_rows; ++i) {
+//             Row row = getRow(i);
+//             row.printRow();
+//         }
+
+//         if (num_rows == 0) {
+//             std::cout << "No rows in table.\n";
+//         }
+
+//         return ExecuteResult::EXECUTE_SUCCESS;
+//     } catch (const std::out_of_range& e) {
+//         throw std::out_of_range("Failed to retrivew a row.\n");
+//     } catch (const std::exception& e) {
+//         std::cout << "Error selecting rows: " << e.what() << "\n";
+//         return ExecuteResult::EXECUTE_FAILURE;
+//     }
+// }
+
 ExecuteResult Table::execute_select_all() {
     try {
-        for (uint32_t i = 0; i < num_rows; ++i) {
-            Row row = getRow(i);
-            row.printRow();
-        }
-
-        if (num_rows == 0) {
+        Cursor cursor(*this, 0);
+        if (cursor.isEndOfTable()) {
             std::cout << "No rows in table.\n";
+            return ExecuteResult::EXECUTE_SUCCESS;
+        }
+        while (!cursor.isEndOfTable()) {
+            Row row = Row::deserialize(cursor.cursorSlot());
+            row.printRow();
+            cursor.cursorAdvance();
         }
 
         return ExecuteResult::EXECUTE_SUCCESS;
