@@ -67,19 +67,21 @@ void Table::insertRow(const Row& row) {
 Row Table::getRow(uint32_t key) {    
     Cursor cursor(*this, key);
     
-    // Check if the key actually exists
-    uint8_t* nodeData = getPageAddress(rootPageNum);
+    // Check if the key actually exists - use the page where cursor landed, not root
+    uint8_t* nodeData = getPageAddress(cursor.getPageNum());
     Node node(nodeData);
     uint32_t numCells = *node.leafNodeNumCells();
     
     // If cursor position is beyond valid cells, key doesn't exist
     if (cursor.getCellNum() >= numCells) {
+        std::cout << "throwing at cell num: " << cursor.getCellNum() << "\n";
         throw std::out_of_range("Key not found");
     }
     
     // Check if the key at cursor position matches the requested key
     uint32_t keyAtPosition = *node.leafNodeKey(cursor.getCellNum());
     if (keyAtPosition != key) {
+        std::cout <<"throwing at key position: " << keyAtPosition << "\n";
         throw std::out_of_range("Key not found");
     }
     
@@ -231,7 +233,8 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     if (oldNode.isRootNode()) {
         return createNewRoot(newPageNum);
     } else {
-        std::cout << "implement updating paretn after splitting\n";
+        std::cout << "implement updating parent after splitting\n";
+        
     }
 }
 
@@ -263,6 +266,10 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     
     Node leftChild(leftChildData);
     leftChild.setNodeRoot(false);
+    
+    // Update the left child's sibling pointer to point to the right child
+    *rightChild.leafNodeRightSibling() = *leftChild.leafNodeRightSibling();      
+    *leftChild.leafNodeRightSibling() = rightChildPageNum;
     
     // Now transform the old root page into an internal node
     root.initializeInternalNode();

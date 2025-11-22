@@ -20,6 +20,7 @@ public:
     void initializeLeafNode();
     void leafNodeInsert(uint32_t key, const Row* value, uint32_t cellNum);
     void printLeafNode();
+    uint32_t* leafNodeRightSibling();
     
     // Internal Node methods 
     // all uint32_t* returns represent page numbers

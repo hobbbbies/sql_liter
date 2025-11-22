@@ -26,7 +26,11 @@ constexpr uint32_t COMMON_NODE_HEADER_SIZE = NODE_TYPE_SIZE + IS_ROOT_SIZE + PAR
 // Leaf Node Header Layout Constants
 constexpr uint32_t LEAF_NODE_NUM_CELLS_SIZE = sizeof(uint32_t);
 constexpr uint32_t LEAF_NODE_NUM_CELLS_OFFSET = COMMON_NODE_HEADER_SIZE;
-constexpr uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE;
+constexpr uint32_t LEAF_NODE_NEXT_LEAF_SIZE = sizeof(uint32_t);
+constexpr uint32_t LEAF_NODE_NEXT_LEAF_OFFSET = LEAF_NODE_NUM_CELLS_OFFSET + LEAF_NODE_NUM_CELLS_SIZE;
+constexpr uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE +
+                                       LEAF_NODE_NUM_CELLS_SIZE +
+                                       LEAF_NODE_NEXT_LEAF_SIZE;
 
 // Leaf Node Body Layout Constants
 constexpr uint32_t LEAF_NODE_KEY_SIZE = sizeof(uint32_t);
@@ -57,3 +61,6 @@ constexpr uint32_t INTERNAL_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE +
 constexpr uint32_t INTERNAL_NODE_CHILD_SIZE = sizeof(uint32_t);
 constexpr uint32_t INTERNAL_NODE_KEY_SIZE = sizeof(uint32_t);
 constexpr uint32_t INTERNAL_NODE_CELL_SIZE = INTERNAL_NODE_CHILD_SIZE + INTERNAL_NODE_KEY_SIZE;
+constexpr uint32_t INTERNAL_NODE_SPACE_FOR_CELLS = PAGE_SIZE - INTERNAL_NODE_HEADER_SIZE;
+constexpr uint32_t INTERNAL_NODE_MAX_KEYS = INTERNAL_NODE_SPACE_FOR_CELLS / INTERNAL_NODE_CELL_SIZE;
+constexpr uint32_t INTERNAL_NODE_MAX_CHILDREN = INTERNAL_NODE_MAX_KEYS + 1;

@@ -198,4 +198,60 @@ TEST_F(InputIntegrationTest, bTreeOutput) {
     std::cout << "Meta command result: " << static_cast<int>(meta_result) << "\n";
     EXPECT_EQ(meta_result, MetaCommandResult::META_COMMAND_SUCCESS);
 }
+
+TEST_F(InputIntegrationTest, SelectTraversesLeafNodeSiblings) {
+    // Insert enough rows to trigger a split (LEAF_NODE_MAX_CELLS = 3)
+    // This will create multiple leaf nodes connected by sibling pointers
+    std::vector<uint32_t> ids = {10, 20, 30, 50};
+    for (uint32_t id : ids) {
+        std::string cmd = "insert " + std::to_string(id) + " user" + std::to_string(id) + " user" + std::to_string(id) + "@test.com";
+        PrepareResult result = processor->execute(cmd);
+        EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
+    }
     
+    // Verify all rows can be retrieved via select (which uses cursor traversal)
+    PrepareResult select_result = processor->execute("select");
+    EXPECT_EQ(select_result, PrepareResult::PREPARE_SUCCESS);
+    
+    // Verify each individual row is accessible
+    for (uint32_t id : ids) {
+        std::cout << "id: " << id << "\n";
+        Row retrieved = table->getRow(id);
+        std::cout << "Retrieved row: " << retrieved.getId() << "\n";
+        EXPECT_EQ(retrieved.getId(), id);
+        std::string expected_username = "user" + std::to_string(id);
+        std::string expected_email = "user" + std::to_string(id) + "@test.com";
+        EXPECT_STREQ(retrieved.getUsername(), expected_username.c_str());
+        EXPECT_STREQ(retrieved.getEmail(), expected_email.c_str());
+    }
+}
+
+TEST_F(InputIntegrationTest, SelectWorksAfterMultipleSplits) {
+    // Insert many rows to trigger multiple splits
+    const int NUM_ROWS = 10;
+    for (int i = 0; i < NUM_ROWS; i++) {
+        uint32_t id = i * 10;  // 0, 10, 20, 30, ...
+        std::string cmd = "insert " + std::to_string(id) + " user" + std::to_string(id) + " user" + std::to_string(id) + "@test.com";
+        PrepareResult result = processor->execute(cmd);
+        EXPECT_EQ(result, PrepareResult::PREPARE_SUCCESS);
+    }
+    
+    // Select should traverse all leaf nodes via sibling pointers
+    PrepareResult select_result = processor->execute("select");
+    EXPECT_EQ(select_result, PrepareResult::PREPARE_SUCCESS);
+    
+    // Verify a few specific rows
+    Row first = table->getRow(0);
+    EXPECT_EQ(first.getId(), 0);
+    EXPECT_STREQ(first.getUsername(), "user0");
+    
+    Row middle = table->getRow(50);
+    EXPECT_EQ(middle.getId(), 50);
+    EXPECT_STREQ(middle.getUsername(), "user50");
+    
+    Row last = table->getRow(90);
+    EXPECT_EQ(last.getId(), 90);
+    EXPECT_STREQ(last.getUsername(), "user90");
+}
+    
+

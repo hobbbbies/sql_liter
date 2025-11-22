@@ -23,6 +23,7 @@ void Node::initializeLeafNode() {
     setNodeType(NodeType::NODE_LEAF);
     *leafNodeNumCells() = 0;
     setNodeRoot(false);
+    *leafNodeRightSibling() = 0;
 }
 
 void Node::leafNodeInsert(uint32_t key, const Row* value, uint32_t cellNum) {    
@@ -167,4 +168,8 @@ uint32_t Node::getNodeMaxKey() {
         default:
             throw std::logic_error("Unknown node type");
     }
+}
+
+uint32_t* Node::leafNodeRightSibling() {
+    return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + LEAF_NODE_NEXT_LEAF_OFFSET);
 }
