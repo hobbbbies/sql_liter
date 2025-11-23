@@ -1,6 +1,7 @@
 #include "node.hpp"
 #include "row.hpp"
 #include "table.hpp"
+#include "cursor.hpp"
 #include <iostream>
 
 uint32_t* Node::leafNodeNumCells() {
@@ -153,6 +154,11 @@ uint32_t* Node::internalNodeKey(uint32_t keyNum) {
     return internalNodeCell(keyNum) + INTERNAL_NODE_CHILD_SIZE / sizeof(uint32_t);
 }
 
+// // updates key in parent node when leaf split occurs 
+// void Node::updateInternalNodeKey(uint32_t oldChildIndex, uint32_t newKey) {
+//     *internalNodeKey(oldChildIndex) = newKey;
+// }
+
 void Node::initializeInternalNode() {
     setNodeType(NodeType::NODE_INTERNAL);
     *internalNodeNumKeys() = 0;
@@ -172,4 +178,8 @@ uint32_t Node::getNodeMaxKey() {
 
 uint32_t* Node::leafNodeRightSibling() {
     return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + LEAF_NODE_NEXT_LEAF_OFFSET);
+}
+
+uint32_t* Node::nodeParent() {
+    return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + NODE_PARENT_OFFSET);
 }

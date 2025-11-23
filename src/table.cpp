@@ -181,12 +181,13 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     std::cout << "Executing leafNodeSplitAndInsert for key: " << key << "\n";
     // left node
     Node oldNode(oldNodeData);
-
+    uint32_t oldNodeMax = oldNode.getNodeMaxKey();
     // right node 
     uint32_t newPageNum = getUnusedPageNum();
     uint8_t* newNodeData = getPageAddress(newPageNum);
     Node newNode(newNodeData);
     newNode.initializeLeafNode();
+    newNode.nodeParent() = oldNode.nodeParent();
 
     std::cout << "newPageNum: " << newPageNum << "\n";
     // copy all cells to vector (holds key value pair)
@@ -233,8 +234,11 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     if (oldNode.isRootNode()) {
         return createNewRoot(newPageNum);
     } else {
-        std::cout << "implement updating parent after splitting\n";
-        
+        parentPageNum = *oldNode.nodeParent();
+        uint32_t newMax = oldNode.getNodeMaxKey();        
+        uint8_t* parentData = getPageAddress(parentPageNum);
+        Node parent(parentData);
+        parent.internalNodeInsert(newMax, newPageNum);
     }
 }
 

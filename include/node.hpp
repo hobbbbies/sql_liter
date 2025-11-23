@@ -29,10 +29,13 @@ public:
     uint32_t* internalNodeCell(uint32_t cellNum);
     uint32_t* internalNodeChild(uint32_t childNum);
     uint32_t* internalNodeKey(uint32_t keyNum);
+    uint32_t internalNodeFindChild(uint32_t key);
+    void updateInternalNodeKey(uint32_t oldKey, uint32_t newKey);
     void initializeInternalNode();
     
     // Node utility methods
     uint32_t getNodeMaxKey();
+    uint32_t* nodeParent();
 
     // Node type methods
     NodeType getNodeType() const;
