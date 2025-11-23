@@ -29,8 +29,8 @@ public:
     uint32_t* internalNodeCell(uint32_t cellNum);
     uint32_t* internalNodeChild(uint32_t childNum);
     uint32_t* internalNodeKey(uint32_t keyNum);
-    uint32_t internalNodeFindChild(uint32_t key);
-    void updateInternalNodeKey(uint32_t oldKey, uint32_t newKey);
+    uint32_t internalNodeFindChild(uint32_t childKey);
+    void internalNodeInsert();
     void initializeInternalNode();
     
     // Node utility methods

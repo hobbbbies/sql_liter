@@ -154,10 +154,25 @@ uint32_t* Node::internalNodeKey(uint32_t keyNum) {
     return internalNodeCell(keyNum) + INTERNAL_NODE_CHILD_SIZE / sizeof(uint32_t);
 }
 
-// // updates key in parent node when leaf split occurs 
-// void Node::updateInternalNodeKey(uint32_t oldChildIndex, uint32_t newKey) {
-//     *internalNodeKey(oldChildIndex) = newKey;
-// }
+// stripped down version of Cursor::leafNodeFind
+// searches parent for index of child 
+uint32_t Node::internalNodeFindChild(uint32_t childKey) {
+    uint32_t numKeys = *internalNodeNumKeys();
+    uint32_t minIndex = 0;
+    uint32_t maxIndex = numKeys;
+    while(minIndex < maxIndex) {
+        uint32_t currentIndex = (minIndex + maxIndex) / 2;
+        if (*internalNodeKey(currentIndex) == childKey) {
+            return currentIndex;
+        } else if (*internalNodeKey(currentIndex) < childKey) {
+            minIndex = currentIndex + 1;
+        } else {
+            maxIndex = currentIndex;
+        }
+    }
+
+    return -1;
+}
 
 void Node::initializeInternalNode() {
     setNodeType(NodeType::NODE_INTERNAL);
@@ -181,5 +196,6 @@ uint32_t* Node::leafNodeRightSibling() {
 }
 
 uint32_t* Node::nodeParent() {
-    return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + NODE_PARENT_OFFSET);
+    return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + PARENT_POINTER_OFFSET);
 }
+
