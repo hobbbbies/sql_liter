@@ -29,6 +29,7 @@ public:
     uint32_t getUnusedPageNum() const { return pager->getNumPages(); }
     uint32_t getNumRows() const;
     void createNewRoot(uint32_t rightChildPageNum);
+    void internalNodeInsert(uint32_t key, uint32_t childPageNum);
 
     ExecuteResult execute_insert(const std::vector<std::string> tokens);
     ExecuteResult execute_select_all();

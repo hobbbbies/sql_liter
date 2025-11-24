@@ -292,11 +292,29 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     std::cout << "Root internalNodeChildren: " << *root.internalNodeChild(0) << "\n";
     std::cout << "Root internalNodeKeys: " << *root.internalNodeKey(0) << "\n";
     std::cout << "Root internalNodeRightChild: " << *root.internalNodeKey(1) << "\n";
-    std::cout << "--------------------------\n";
+    std::cout << "--------------------------\n"; 
 
     for(uint32_t i = 0; i < *root.internalNodeNumKeys(); i++) {
         std::cout << "parent key (inside createNewRoot): " << *root.internalNodeKey(i) << std::endl;
     }
     *leftChild.nodeParent() = rootPageNum;
     *rightChild.nodeParent() = rootPageNum;
+}
+
+void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
+    uint8_t* parentData = getPageAddress(parentPageNum);
+    Node parent(parentData);
+
+    uint8_t* childData = getPageAddress(childPageNum);
+    Node child(childData);
+    uint32_t childMaxKey = child.getNodeMaxKey();
+
+    uint32_t originalNumKeys = *parent.internalNodeNumKeys();
+
+    if (originalNumKeys > INTERNAL_NODE_MAX_KEYS) {
+        std::cout << "TODO: Split internal node\n"
+        exit(EXIT_FAILURE);
+    }
+
+    parent.internalNodeInsert(childPageNum, childMaxKey, originalNumKeys);
 }
