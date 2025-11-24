@@ -154,24 +154,24 @@ uint32_t* Node::internalNodeKey(uint32_t keyNum) {
     return internalNodeCell(keyNum) + INTERNAL_NODE_CHILD_SIZE / sizeof(uint32_t);
 }
 
-// stripped down version of Cursor::leafNodeFind
-// searches parent for index of child 
-uint32_t Node::internalNodeFindChild(uint32_t childKey) {
+// Searches parent for index of child by page number
+// Returns the index where the child page number is stored, or UINT32_MAX if not found
+uint32_t Node::internalNodeFindChild(uint32_t childPageNum) {
     uint32_t numKeys = *internalNodeNumKeys();
-    uint32_t minIndex = 0;
-    uint32_t maxIndex = numKeys;
-    while(minIndex < maxIndex) {
-        uint32_t currentIndex = (minIndex + maxIndex) / 2;
-        if (*internalNodeKey(currentIndex) == childKey) {
-            return currentIndex;
-        } else if (*internalNodeKey(currentIndex) < childKey) {
-            minIndex = currentIndex + 1;
-        } else {
-            maxIndex = currentIndex;
+    
+    // Check all regular children (0 to numKeys-1)
+    for (uint32_t i = 0; i < numKeys; i++) {
+        if (*internalNodeChild(i) == childPageNum) {
+            return i;
         }
     }
-
-    return -1;
+    
+    // Check right child
+    if (*internalNodeRightChild() == childPageNum) {
+        return numKeys;  // Right child is conceptually at index numKeys
+    }
+    
+    return UINT32_MAX;  // Not found
 }
 
 void Node::initializeInternalNode() {
@@ -199,6 +199,15 @@ uint32_t* Node::nodeParent() {
     return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + PARENT_POINTER_OFFSET);
 }
 
+void Node::internalNodeUpdateMaxKey(uint32_t childPageNum, uint32_t newNodeMax) {
+    uint32_t oldChildIndex = internalNodeFindChild(childPageNum);
+    if (oldChildIndex == UINT32_MAX) {
+        throw std::runtime_error("Child not found in parent node");
+    }
+    *internalNodeKey(oldChildIndex) = newNodeMax;
+}
+
 void Node::internalNodeInsert(uint32_t childPageNum, uint32_t childMaxKey) {
     
 }
+

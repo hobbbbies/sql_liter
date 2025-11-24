@@ -42,17 +42,14 @@ void Table::insertRow(const Row& row) {
     Cursor cursor(*this, row.getId());
     // then we create a node from the page data for node operations
     uint8_t* nodeData = getPageAddress(cursor.getPageNum());
-    std::cout << "nodeDataaaaa: " << nodeData << "\n";
     Node node(nodeData);
     // numCells will include the new node to be inserted 
     uint32_t numCells = *node.leafNodeNumCells();
-    std::cout << "numCellsssss: " << numCells << "\n";
 
     if (numCells >= LEAF_NODE_MAX_CELLS) {
-        leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), nodeData); 
+        leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), cursor.getPageNum()); 
         return;   
     }
-    std::cout << "if skipped \n";
     
     // Check if we're inserting at a position with existing cells
     if (cursor.getCellNum() < numCells) {
@@ -61,7 +58,17 @@ void Table::insertRow(const Row& row) {
             throw std::invalid_argument("Duplicate key");
         }        
     } 
-    node.leafNodeInsert(row.getId(), &row, cursor.getCellNum());    
+    
+    uint32_t oldMax = node.getNodeMaxKey();
+    node.leafNodeInsert(row.getId(), &row, cursor.getCellNum()); 
+    
+    // Update parent key if this node is not root and the max key changed
+    if (!node.isRootNode() && oldMax != node.getNodeMaxKey()) {
+        uint32_t parentPageNum = *node.nodeParent();
+        uint8_t* parentData = getPageAddress(parentPageNum);
+        Node parent(parentData);
+        parent.internalNodeUpdateMaxKey(cursor.getPageNum(), node.getNodeMaxKey());
+    }
 }
 
 Row Table::getRow(uint32_t key) {    
@@ -177,9 +184,10 @@ uint32_t Table::getNumRows() const {
     return *node.leafNodeNumCells();
 }
 
-void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt, uint8_t* oldNodeData) {
+void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt, uint32_t oldNodePageNum) {
     std::cout << "Executing leafNodeSplitAndInsert for key: " << key << "\n";
     // left node
+    uint8_t* oldNodeData = getPageAddress(oldNodePageNum);
     Node oldNode(oldNodeData);
     uint32_t oldNodeMax = oldNode.getNodeMaxKey();
     // right node 
@@ -189,27 +197,19 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     newNode.initializeLeafNode();
     *newNode.nodeParent() = *oldNode.nodeParent();
 
-    std::cout << "newPageNum: " << newPageNum << "\n";
     // copy all cells to vector (holds key value pair)
     std::vector<std::pair<uint32_t, Row>> allCells;
 
     // fill out vector
     uint32_t numExistingCells = *oldNode.leafNodeNumCells();
-    std::cout << "numExistingCells: " << numExistingCells << "\n";
     for (uint32_t i = 0; i < numExistingCells; i++) {
-        std::cout << "vector loop at index " << i << "\n";
         uint32_t node_key = *oldNode.leafNodeKey(i);
-        std::cout << "node_key: " << node_key << "\n";
         Row node_row = Row::deserialize(oldNode.leafNodeValue(i));
-        std::cout << "node_row id: " << node_row.getId() << "\n";
         allCells.emplace_back(node_key, node_row);
-        std::cout << "crashing after emplace back?\n";
     }
     // insert new cell
     allCells.emplace(allCells.begin() + cellNumToInsertAt, key, *value);
-    std::cout << "crashing after outside emplace back?\n";
 
-    std::cout << "filled out vector \n";
     for (uint32_t i = 0; i < allCells.size(); i++) {
         std::cout << "key: " << allCells[i].first << "\n";
     }
@@ -230,7 +230,6 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
 
-    std::cout << "Old node is root?: " << oldNode.isRootNode() << "\n";
     if (oldNode.isRootNode()) {
         return createNewRoot(newPageNum);
     } else {
@@ -240,12 +239,7 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
         uint8_t* parentData = getPageAddress(parentPageNum);
         Node parent(parentData);
 
-        uint32_t oldChildIndex = parent.internalNodeFindChild(oldNodeMax);
-        if (oldChildIndex == UINT32_MAX) {
-            throw std::runtime_error("Child not found in parent node");
-        }
-        *parent.internalNodeKey(oldChildIndex) = newNodeMax;
-        // to do
+        parent.internalNodeUpdateMaxKey(oldNodePageNum, newNodeMax);
         parent.internalNodeInsert(newNodeMax, newPageNum);
     }
 }
@@ -256,6 +250,7 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
 // should this be switched to non sequential storage?
 void Table::createNewRoot(uint32_t rightChildPageNum) {
     // Get the old root (which will become the left child)
+    std::cout << "Creating new root\n";
     uint8_t* rootData = getPageAddress(rootPageNum);
     Node root(rootData);
     
@@ -299,8 +294,9 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     std::cout << "Root internalNodeRightChild: " << *root.internalNodeKey(1) << "\n";
     std::cout << "--------------------------\n";
 
-    // Update parent pointers in both children
-    // (You'll need to implement setParentPointer if not already done)
-    // leftChild.setParentPointer(rootPageNum);
-    // rightChild.setParentPointer(rootPageNum);
+    for(uint32_t i = 0; i < *root.internalNodeNumKeys(); i++) {
+        std::cout << "parent key (inside createNewRoot): " << *root.internalNodeKey(i) << std::endl;
+    }
+    *leftChild.nodeParent() = rootPageNum;
+    *rightChild.nodeParent() = rootPageNum;
 }

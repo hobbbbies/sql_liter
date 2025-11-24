@@ -81,42 +81,6 @@ TEST_F(TableTest, InternalNodeDoesntUpdateMaxKeyOnRightInsert) {
     EXPECT_EQ(maxKey, LEAF_NODE_MAX_CELLS / 2); 
 }
 
-TEST_F(TableTest, InternalNodeUpdatesOnLeftInsert) {
-    // Insert keys 0, 1, 3, 4 (skipping 2)
-    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
-        if (i == 2) continue;
-        table->insertRow(Row(i, "test", "test@example.com"));
-    }
-    // Trigger split - creates internal root with left and right children
-    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
-    
-    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
-    Node rootNode(rootNodeData);
-    
-    // Get the initial parent key (should be max of left child)
-    uint32_t initialParentKey = *rootNode.internalNodeKey(0);
-    EXPECT_EQ(initialParentKey, LEAF_NODE_MAX_CELLS / 2);
-    
-    // Insert key 2 into left child - it becomes the new max of left node
-    table->insertRow(Row(2, "test", "test@example.com"));
-    
-    // Parent key should now be updated to the new max of the left node
-    uint32_t updatedParentKey = *rootNode.internalNodeKey(0);
-    EXPECT_EQ(updatedParentKey, 2);
-}
-
-TEST_F(TableTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
-    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
-        table->insertRow(Row(i, "test", "test@example.com"));
-    }
-    EXPECT_EQ(table->getNumRows(), LEAF_NODE_MAX_CELLS);
-    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
-    Node rootNode(rootNodeData);
-    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_LEAF);
-    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
-    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_INTERNAL);    
-}
-
 TEST_F(TableTest, NumPagesIs3AfterSplit) {
     for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
         table->insertRow(Row(i, "test", "test@example.com"));
@@ -164,3 +128,47 @@ TEST_F(TableTest, InsertionPastMaxCellsDoesNotCrash) {
 }
 
 
+// this does not fucking work
+TEST_F(TableTest, InternalNodeUpdatesOnLeftInsert) {
+    // Step 1: Fill table and trigger initial split (creates internal root)
+    // Insert keys 0-2 (fills to LEAF_NODE_MAX_CELLS = 3)
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    // Insert key 3 triggers split: left child [0,1], right child [2,3]
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    
+    // Verify initial state: parent key should be max of left child (1)
+    uint32_t initialParentKey = *rootNode.internalNodeKey(0);
+    EXPECT_EQ(initialParentKey, 1);  // max of left child [0,1]
+    
+    // Step 2: Fill left child to capacity again
+    // Insert keys 4, 5 into left child (left child now has [0,1,4])
+    table->insertRow(Row(4, "test", "test@example.com"));
+    
+    // Step 3: Trigger split on left child by inserting key 5
+    // This should split left child and update parent key
+    table->insertRow(Row(5, "test", "test@example.com"));
+    
+    // Parent should now have 2 keys (pointing to 3 children)
+    EXPECT_EQ(*rootNode.internalNodeNumKeys(), 2);
+    
+    // First parent key should be updated to new max of leftmost child
+    uint32_t updatedParentKey = *rootNode.internalNodeKey(0);
+    EXPECT_EQ(updatedParentKey, 1);  // max of leftmost child after split
+}
+
+TEST_F(TableTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    EXPECT_EQ(table->getNumRows(), LEAF_NODE_MAX_CELLS);
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_LEAF);
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_INTERNAL);    
+}
