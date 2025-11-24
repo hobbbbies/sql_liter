@@ -199,3 +199,6 @@ uint32_t* Node::nodeParent() {
     return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + PARENT_POINTER_OFFSET);
 }
 
+void Node::internalNodeInsert(uint32_t childPageNum, uint32_t childMaxKey) {
+    
+}

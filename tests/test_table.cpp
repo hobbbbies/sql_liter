@@ -65,6 +65,46 @@ TEST_F(TableTest, GetRowOutOfBounds) {
 }
 
 // leafNodeSplit
+TEST_F(TableTest, InternalNodeDoesntUpdateMaxKeyOnRightInsert) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    // trigger split
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    // key should point to largest value of left child
+
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    uint32_t maxKey = rootNode.getNodeMaxKey();
+    EXPECT_EQ(maxKey, LEAF_NODE_MAX_CELLS / 2); 
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS + 1, "test", "test@example.com"));
+    EXPECT_EQ(maxKey, LEAF_NODE_MAX_CELLS / 2); 
+}
+
+TEST_F(TableTest, InternalNodeUpdatesOnLeftInsert) {
+    // Insert keys 0, 1, 3, 4 (skipping 2)
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        if (i == 2) continue;
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    // Trigger split - creates internal root with left and right children
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    
+    // Get the initial parent key (should be max of left child)
+    uint32_t initialParentKey = *rootNode.internalNodeKey(0);
+    EXPECT_EQ(initialParentKey, LEAF_NODE_MAX_CELLS / 2);
+    
+    // Insert key 2 into left child - it becomes the new max of left node
+    table->insertRow(Row(2, "test", "test@example.com"));
+    
+    // Parent key should now be updated to the new max of the left node
+    uint32_t updatedParentKey = *rootNode.internalNodeKey(0);
+    EXPECT_EQ(updatedParentKey, 2);
+}
+
 TEST_F(TableTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
     for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
         table->insertRow(Row(i, "test", "test@example.com"));
@@ -122,3 +162,5 @@ TEST_F(TableTest, InsertionPastMaxCellsDoesNotCrash) {
     table->insertRow(Row(LEAF_NODE_MAX_CELLS + 2, "test", "test@example.com"));    
     EXPECT_EQ(table->getUnusedPageNum(), 3);
 }
+
+
