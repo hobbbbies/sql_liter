@@ -237,6 +237,7 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
         uint8_t* parentData = getPageAddress(parentPageNum);
         Node parent(parentData);
 
+        std::cout << "Updating max key to " << newNodeMax << "\n";
         parent.internalNodeUpdateMaxKey(oldNodePageNum, newNodeMax);
         internalNodeInsert(parentPageNum, newPageNum);
     }
@@ -328,10 +329,11 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
     if (rightChildMaxKey < childMaxKey) {
         // New child becomes the rightmost child
         std::cout << "New child becomes the rightmost child\n";
+        *parent.internalNodeNumKeys() = numKeys + 1;
         *parent.internalNodeChild(numKeys) = rightChildPageNum;
         *parent.internalNodeKey(numKeys) = rightChildMaxKey;
         *parent.internalNodeRightChild() = childPageNum;
-        *parent.internalNodeNumKeys() = numKeys + 1;
+
     } else {
         // Find the correct position and shift elements
         uint32_t i = numKeys;
