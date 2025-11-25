@@ -66,7 +66,7 @@ make
 ./sql_liter_tests
 ```
 
-## Technical Highlights for Recruiters
+## Technical Highlights
 
 ### Systems Programming Skills
 - **Memory Management**: Manual memory allocation and deallocation patterns
