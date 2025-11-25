@@ -33,8 +33,6 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
     return pager->getPage(pageNum);
 }
 
-// this is where its breaking
-// can't do leafnode operations on internal node ???
 void Table::insertRow(const Row& row) {
     // should get insertion position for new node 
     // cursor will point to correct node AND cell position
@@ -240,7 +238,7 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
         Node parent(parentData);
 
         parent.internalNodeUpdateMaxKey(oldNodePageNum, newNodeMax);
-        parent.internalNodeInsert(newNodeMax, newPageNum);
+        internalNodeInsert(parentPageNum, newPageNum);
     }
 }
 
@@ -250,7 +248,6 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
 // should this be switched to non sequential storage?
 void Table::createNewRoot(uint32_t rightChildPageNum) {
     // Get the old root (which will become the left child)
-    std::cout << "Creating new root\n";
     uint8_t* rootData = getPageAddress(rootPageNum);
     Node root(rootData);
     
@@ -259,6 +256,7 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     
     // Allocate a new page for the left child
     uint32_t leftChildPageNum = getUnusedPageNum();
+    std::cout << "leftChildPageNum given in createNewRoot: " << leftChildPageNum << "\n";
     uint8_t* leftChildData = getPageAddress(leftChildPageNum);
     
     std::cout << "--------------------------\n";
@@ -302,19 +300,58 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
 }
 
 void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
+    std::cout << "Executing internalNodeInsert for parentPageNum: " << parentPageNum << "\n";
     uint8_t* parentData = getPageAddress(parentPageNum);
     Node parent(parentData);
 
+    std::cout << "Executing internalNodeInsert for childPageNum: " << childPageNum << "\n";
     uint8_t* childData = getPageAddress(childPageNum);
     Node child(childData);
     uint32_t childMaxKey = child.getNodeMaxKey();
 
-    uint32_t originalNumKeys = *parent.internalNodeNumKeys();
+    uint32_t numKeys = *parent.internalNodeNumKeys();
 
-    if (originalNumKeys > INTERNAL_NODE_MAX_KEYS) {
-        std::cout << "TODO: Split internal node\n"
+    if (numKeys >= INTERNAL_NODE_MAX_KEYS) {
+        std::cout << "TODO: Split internal node\n";
         exit(EXIT_FAILURE);
     }
 
-    parent.internalNodeInsert(childPageNum, childMaxKey, originalNumKeys);
+    // Get the right child to compare with
+    uint32_t rightChildPageNum = *parent.internalNodeRightChild();
+    std::cout << "Executing internalNodeInsert for rightChildPageNum: " << rightChildPageNum << "\n";
+    uint8_t* rightChildData = getPageAddress(rightChildPageNum);
+    Node rightChild(rightChildData);
+    uint32_t rightChildMaxKey = rightChild.getNodeMaxKey();
+
+    std::cout << "rightChildMaxKey: " << rightChildMaxKey << "\n";
+    std::cout << "childMaxKey: " << childMaxKey << "\n";
+    if (rightChildMaxKey < childMaxKey) {
+        // New child becomes the rightmost child
+        std::cout << "New child becomes the rightmost child\n";
+        *parent.internalNodeChild(numKeys) = rightChildPageNum;
+        *parent.internalNodeKey(numKeys) = rightChildMaxKey;
+        *parent.internalNodeRightChild() = childPageNum;
+        *parent.internalNodeNumKeys() = numKeys + 1;
+    } else {
+        // Find the correct position and shift elements
+        uint32_t i = numKeys;
+        while (i > 0 && childMaxKey < *parent.internalNodeKey(i - 1)) {
+            i--;
+        }
+        
+        // Shift elements from position i to the right
+        std::cout << "Shifting elements from position i to the right\n";
+        std::cout << "numKeys: " << numKeys << "\n";
+        std::cout << "i: " << i << "\n";
+        for (uint32_t j = numKeys; j > i; j--) {
+            *parent.internalNodeChild(j) = *parent.internalNodeChild(j - 1);
+            *parent.internalNodeKey(j) = *parent.internalNodeKey(j - 1);
+            uint32_t childPageNum = *parent.internalNodeChild(j);
+            std::cout << "childPageNum inside loop: " << childPageNum << "\n"; 
+        }
+        
+        *parent.internalNodeChild(i) = childPageNum;
+        *parent.internalNodeKey(i) = childMaxKey;
+        *parent.internalNodeNumKeys() = numKeys + 1;
+    }
 }

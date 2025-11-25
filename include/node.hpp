@@ -30,7 +30,6 @@ public:
     uint32_t* internalNodeChild(uint32_t childNum);
     uint32_t* internalNodeKey(uint32_t keyNum);
     uint32_t internalNodeFindChild(uint32_t childPageNum);
-    void internalNodeInsert(uint32_t childPageNum, uint32_t childMaxKey, uint32_t numKeys);
     void internalNodeUpdateMaxKey(uint32_t childPageNum, uint32_t newNodeMax);
     void initializeInternalNode();
     

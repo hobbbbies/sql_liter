@@ -60,7 +60,7 @@ else, need to allocate memory for it, and retrieve it from the file
 */
 uint8_t* Pager::getPage(uint32_t pageNum) {
     if (pageNum >= TABLE_MAX_PAGES) {
-        throw std::out_of_range("Page number exceeds maximum pages");
+        throw std::out_of_range("Page number exceeds maximum pages (inside getPage)");
     }
 
     uint8_t* page = pages[pageNum];

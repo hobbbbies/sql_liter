@@ -139,8 +139,6 @@ uint32_t* Node::internalNodeCell(uint32_t cellNum) {
 // returns pointer to child node cell
 uint32_t* Node::internalNodeChild(uint32_t childNum) {
     uint32_t numKeys = *internalNodeNumKeys();
-    std::cout << "numKeys: " << numKeys << "\n";
-    std::cout << "childNum: " << childNum << "\n";
     if (childNum > numKeys) {
         throw std::out_of_range("Tried to access child_num " + std::to_string(childNum) + " > num_keys " + std::to_string(numKeys));
     } else if (childNum == numKeys) {
@@ -151,7 +149,7 @@ uint32_t* Node::internalNodeChild(uint32_t childNum) {
 }
 
 uint32_t* Node::internalNodeKey(uint32_t keyNum) {
-    return internalNodeCell(keyNum) + INTERNAL_NODE_CHILD_SIZE / sizeof(uint32_t);
+    return reinterpret_cast<uint32_t*>(reinterpret_cast<char*>(internalNodeCell(keyNum)) + INTERNAL_NODE_CHILD_SIZE);
 }
 
 // Searches parent for index of child by page number
@@ -206,8 +204,3 @@ void Node::internalNodeUpdateMaxKey(uint32_t childPageNum, uint32_t newNodeMax) 
     }
     *internalNodeKey(oldChildIndex) = newNodeMax;
 }
-
-void Node::internalNodeInsert(uint32_t childPageNum, uint32_t childMaxKey) {
-    
-}
-
