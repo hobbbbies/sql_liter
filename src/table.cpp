@@ -227,6 +227,8 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     // update cell count of both nodes
     *oldNode.leafNodeNumCells() = LEAF_NODE_LEFT_SPLIT_COUNT;
     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
+    *newNode.leafNodeRightSibling() = *oldNode.leafNodeRightSibling();      
+    *oldNode.leafNodeRightSibling() = newPageNum;
 
     if (oldNode.isRootNode()) {
         return createNewRoot(newPageNum);
@@ -273,10 +275,6 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
     Node leftChild(leftChildData);
     leftChild.setNodeRoot(false);
     
-    // Update the left child's sibling pointer to point to the right child
-    *rightChild.leafNodeRightSibling() = *leftChild.leafNodeRightSibling();      
-    *leftChild.leafNodeRightSibling() = rightChildPageNum;
-    
     // Now transform the old root page into an internal node
     root.initializeInternalNode();
     root.setNodeRoot(true);
@@ -301,11 +299,9 @@ void Table::createNewRoot(uint32_t rightChildPageNum) {
 }
 
 void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
-    std::cout << "Executing internalNodeInsert for parentPageNum: " << parentPageNum << "\n";
     uint8_t* parentData = getPageAddress(parentPageNum);
     Node parent(parentData);
 
-    std::cout << "Executing internalNodeInsert for childPageNum: " << childPageNum << "\n";
     uint8_t* childData = getPageAddress(childPageNum);
     Node child(childData);
     uint32_t childMaxKey = child.getNodeMaxKey();
@@ -319,16 +315,12 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
 
     // Get the right child to compare with
     uint32_t rightChildPageNum = *parent.internalNodeRightChild();
-    std::cout << "Executing internalNodeInsert for rightChildPageNum: " << rightChildPageNum << "\n";
     uint8_t* rightChildData = getPageAddress(rightChildPageNum);
     Node rightChild(rightChildData);
     uint32_t rightChildMaxKey = rightChild.getNodeMaxKey();
 
-    std::cout << "rightChildMaxKey: " << rightChildMaxKey << "\n";
-    std::cout << "childMaxKey: " << childMaxKey << "\n";
     if (rightChildMaxKey < childMaxKey) {
         // New child becomes the rightmost child
-        std::cout << "New child becomes the rightmost child\n";
         *parent.internalNodeNumKeys() = numKeys + 1;
         *parent.internalNodeChild(numKeys) = rightChildPageNum;
         *parent.internalNodeKey(numKeys) = rightChildMaxKey;

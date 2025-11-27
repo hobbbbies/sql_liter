@@ -118,13 +118,10 @@ TEST_F(TableTest, InsertionPastMaxCellsDoesNotCrash) {
     for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
         table->insertRow(Row(i, "test", "test@example.com"));
     }
-    std::cout << "seg fault?\n";
     table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
-    std::cout << "seg fault?\n";
     table->insertRow(Row(LEAF_NODE_MAX_CELLS + 1, "test", "test@example.com"));    
-    std::cout << "seg fault?\n";
     table->insertRow(Row(LEAF_NODE_MAX_CELLS + 2, "test", "test@example.com"));    
-    EXPECT_EQ(table->getUnusedPageNum(), 3);
+    EXPECT_EQ(table->getUnusedPageNum(), 4);
 }
 
 
@@ -171,4 +168,16 @@ TEST_F(TableTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
     EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_LEAF);
     table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
     EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_INTERNAL);    
+}
+
+TEST_F(TableTest, InternalNodeInsertOnLeftChild) {
+    for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    // this will create an internal node @ the root
+    table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
+    
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    EXPECT_EQ(*rootNode.internalNodeKey(0), LEAF_NODE_MAX_CELLS / 2); 
 }

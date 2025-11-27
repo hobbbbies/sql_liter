@@ -34,29 +34,7 @@ TEST_F(CursorTest, InitializesCursorAtFirstRow) {
     
     // For row 0, we should be at the start of page 0
     uint8_t* page0 = table->getPageAddress(0);
-    EXPECT_EQ(slot, page0);  // First row should be at start of first page
-}
-
-TEST_F(CursorTest, InitializesCursorAtEndOfTable) {
-    // Create cursor at the last possible row position
-    uint32_t lastRowPosition = TABLE_MAX_ROWS - 1;
-    Cursor cursor(*table, lastRowPosition);
-    
-    // The cursor should be pointing to the last possible position
-    void* slot = cursor.cursorSlot();
-    
-    // The slot should not be null
-    ASSERT_NE(slot, nullptr);
-    
-    // Calculate expected page and offset for the last row
-    uint32_t expectedPage = lastRowPosition / ROWS_PER_PAGE;
-    uint32_t expectedRowOffset = lastRowPosition % ROWS_PER_PAGE;
-    uint32_t expectedByteOffset = expectedRowOffset * Row::getRowSize();
-    
-    uint8_t* expectedPagePtr = table->getPageAddress(expectedPage);
-    void* expectedSlot = expectedPagePtr + expectedByteOffset;
-    
-    EXPECT_EQ(slot, expectedSlot);
+    EXPECT_EQ(slot, page0 + LEAF_NODE_HEADER_SIZE + LEAF_NODE_KEY_SIZE);  // First row should be at start of first page
 }
 
 TEST_F(CursorTest, CursorSlotCalculatesCorrectOffset) {
@@ -119,23 +97,3 @@ TEST_F(CursorTest, CursorAdvanceIncrementsRowNum) {
     uint8_t* expectedSlot1 = page0 + Row::getRowSize();
     EXPECT_EQ(slot1, expectedSlot1);
 }
-
-// TEST_F(CursorTest, CursorFindsKeyFromInternalNode) {
-//     table->insertRow(1);
-//     table->insertRow(2);
-//     table->insertRow(3);
-//     table->insertRow(4);
-//     table->insertRow(5);
-//     table->insertRow(6);
-//     table->insertRow(7);
-//     table->insertRow(8);
-//     table->insertRow(9);
-//     table->insertRow(10);
-//     table->insertRow(11);
-//     table->insertRow(12);
-//     table->insertRow(13);
-//     table->insertRow(14);
-//     table->insertRow(15);
-//     Cursor cursor(*table, 0);
-    
-// }

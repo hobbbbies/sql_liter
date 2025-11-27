@@ -16,7 +16,6 @@ Cursor::Cursor(Table& table, uint32_t key) : table(table), endOfTable(false) {
     }
 }
 
-
 Cursor::~Cursor() {}
 
 // sets cursor to correct cell within given row (pageNum)
