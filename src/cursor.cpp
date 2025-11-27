@@ -25,6 +25,11 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
     uint8_t* nodeData = table.getPageAddress(pageNum);
     Node node(nodeData);
     
+    if (*node.leafNodeNumCells() == 0) {
+        endOfTable = true;
+        return;
+    }
+
     uint32_t minIndex = 0;
     uint32_t onePastMaxIndex = *node.leafNodeNumCells();
     // binary search inside of leaf node to find key OR insertion position
@@ -51,6 +56,11 @@ void Cursor::internalNodeFind(uint32_t key, uint32_t pageNum) {
     // create node from pagNum
     uint8_t* nodeData = table.getPageAddress(pageNum);
     Node node(nodeData);
+    
+    if (*node.internalNodeRightChild() == INVALID_PAGE_NUM) {
+        endOfTable = true;
+        return;
+    }
     
     // binary search to find index of child node 
     uint32_t minIndex = 0;
@@ -101,4 +111,3 @@ void Cursor::cursorAdvance() {
         }
     }
 }
-

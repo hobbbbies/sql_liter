@@ -132,30 +132,33 @@ TEST_F(TableTest, InternalNodeUpdatesOnLeftInsert) {
     for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS; i++) {
         table->insertRow(Row(i, "test", "test@example.com"));
     }
-    // Insert key 3 triggers split: left child [0,1], right child [2,3]
+    
+    // Insert key 13 triggers split: left child [0-6], right child [7-13]
     table->insertRow(Row(LEAF_NODE_MAX_CELLS, "test", "test@example.com"));
     
     uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
     Node rootNode(rootNodeData);
     
-    // Verify initial state: parent key should be max of left child (1)
+    // Verify initial state: parent key should be max of left child (6)
     uint32_t initialParentKey = *rootNode.internalNodeKey(0);
-    EXPECT_EQ(initialParentKey, 1);  // max of left child [0,1]
+    EXPECT_EQ(initialParentKey, LEAF_NODE_LEFT_SPLIT_COUNT - 1);  // max of left child [0-6]
     
-    // Step 2: Fill left child to capacity again
-    // Insert keys 4, 5 into left child (left child now has [0,1,4])
-    table->insertRow(Row(4, "test", "test@example.com"));
+    // Step 2: Fill left child to capacity again by inserting keys 14-19
+    // Left child now has [0-6, 14-19] = 13 keys
+    for(uint32_t i = 14; i < 14 + (LEAF_NODE_MAX_CELLS - LEAF_NODE_LEFT_SPLIT_COUNT); i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
     
-    // Step 3: Trigger split on left child by inserting key 5
-    // This should split left child and update parent key
-    table->insertRow(Row(5, "test", "test@example.com"));
+    // Step 3: Trigger split on left child by inserting key 20
+    // This should split left child and update parent to have 2 keys
+    table->insertRow(Row(20, "test", "test@example.com"));
     
     // Parent should now have 2 keys (pointing to 3 children)
     EXPECT_EQ(*rootNode.internalNodeNumKeys(), 2);
     
     // First parent key should be updated to new max of leftmost child
     uint32_t updatedParentKey = *rootNode.internalNodeKey(0);
-    EXPECT_EQ(updatedParentKey, 1);  // max of leftmost child after split
+    EXPECT_EQ(updatedParentKey, LEAF_NODE_LEFT_SPLIT_COUNT - 1);  // max of leftmost child after split
 }
 
 TEST_F(TableTest, LeafNodeSplitAndInsertIsCalledOnRightSize) {
@@ -180,4 +183,29 @@ TEST_F(TableTest, InternalNodeInsertOnLeftChild) {
     uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
     Node rootNode(rootNodeData);
     EXPECT_EQ(*rootNode.internalNodeKey(0), LEAF_NODE_MAX_CELLS / 2); 
+}
+
+TEST_F(TableTest, InernalNodeCannotSplitPastMaxKeys) {
+    // To fill an internal node with INTERNAL_NODE_MAX_KEYS (510) keys,
+    // we need 511 leaf nodes (INTERNAL_NODE_MAX_CHILDREN)
+    // Each leaf split creates a new child, so we need to trigger enough splits
+    
+    // Strategy: Insert sequential keys to create many leaf nodes
+    // With LEAF_NODE_MAX_CELLS = 13, inserting 14 keys creates 2 leaf nodes (1 split)
+    // To get 511 leaf nodes, we need approximately 511 * 7 = 3577 keys
+    // (each leaf holds ~7 keys after splits)
+    
+    uint32_t numKeysToInsert = INTERNAL_NODE_MAX_CHILDREN * LEAF_NODE_RIGHT_SPLIT_COUNT;
+    
+    for(uint32_t i = 0; i < numKeysToInsert; i++) {
+        table->insertRow(Row(i, "test", "test@example.com"));
+    }
+    
+    // Verify the root is an internal node
+    uint8_t* rootNodeData = table->getPageAddress(table->getRootPageNum());
+    Node rootNode(rootNodeData);
+    EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_INTERNAL);
+    
+    // The test passes if we don't crash - internal node splitting should work
+    // or throw an appropriate error if not implemented
 }

@@ -97,6 +97,9 @@ void Node::printTree(Table& table, uint32_t rootPageNum, uint32_t indentationLev
             }
             // print rightmost child
             uint32_t rightChildPageNum = *node.internalNodeRightChild();
+            if (rightChildPageNum == INVALID_PAGE_NUM) {
+                break;
+            }
             std::cout << "right child page num: " << rightChildPageNum << "\n";
             indent(indentationLevel + 1);
             std::cout << "- child " << numKeys << " (page " << rightChildPageNum << "):\n";
@@ -142,9 +145,17 @@ uint32_t* Node::internalNodeChild(uint32_t childNum) {
     if (childNum > numKeys) {
         throw std::out_of_range("Tried to access child_num " + std::to_string(childNum) + " > num_keys " + std::to_string(numKeys));
     } else if (childNum == numKeys) {
-        return internalNodeRightChild();
+        uint32_t* rightChild = internalNodeRightChild();
+        if (*rightChild == INVALID_PAGE_NUM) {
+            throw std::out_of_range("Tried to access right child of internal node with no right child");
+        }
+        return rightChild;
     } else {
-        return internalNodeCell(childNum);
+        uint32_t* child = internalNodeCell(childNum); 
+        if (*child == INVALID_PAGE_NUM) {
+            throw std::out_of_range("Tried to access child_num " + std::to_string(childNum) + " but was invalid page num");
+        }
+        return child;
     }
 }
 
@@ -175,6 +186,7 @@ uint32_t Node::internalNodeFindChild(uint32_t childPageNum) {
 void Node::initializeInternalNode() {
     setNodeType(NodeType::NODE_INTERNAL);
     *internalNodeNumKeys() = 0;
+    *internalNodeRightChild() = INVALID_PAGE_NUM;
     setNodeRoot(false);
 }
 

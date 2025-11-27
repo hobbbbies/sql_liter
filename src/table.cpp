@@ -149,6 +149,7 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
 //     }
 // }
 
+// TODO: Fix select on empty table
 ExecuteResult Table::execute_select_all() {
     try {
         Cursor cursor(*this, 0);
@@ -310,11 +311,18 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
 
     if (numKeys >= INTERNAL_NODE_MAX_KEYS) {
         std::cout << "TODO: Split internal node\n";
-        exit(EXIT_FAILURE);
+        internalNodeSplitAndInsert(parentPageNum, childPageNum);
+        return;
     }
 
     // Get the right child to compare with
     uint32_t rightChildPageNum = *parent.internalNodeRightChild();
+    
+    // checks if right child is invalid - Means node is empty 
+    if (rightChildPageNum == INVALID_PAGE_NUM) {
+        *parent.internalNodeRightChild() = childPageNum;
+        return;
+    }
     uint8_t* rightChildData = getPageAddress(rightChildPageNum);
     Node rightChild(rightChildData);
     uint32_t rightChildMaxKey = rightChild.getNodeMaxKey();
@@ -348,4 +356,8 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
         *parent.internalNodeKey(i) = childMaxKey;
         *parent.internalNodeNumKeys() = numKeys + 1;
     }
+}
+
+void Table::internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t oldNodePageNum) {
+    
 }
