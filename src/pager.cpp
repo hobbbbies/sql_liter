@@ -142,7 +142,7 @@ void Pager::pagerFlush(uint32_t pageNum) {
     fileDescriptor.flush();
 }
 
-void Pager::flushAllPages(uint32_t numRows, uint32_t rowSize) {
+void Pager::flushAllPages() {
 
     try {        
         for (uint32_t i = 0; i < numPages; i++) {

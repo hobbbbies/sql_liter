@@ -17,7 +17,9 @@ uint32_t* Node::leafNodeKey(uint32_t cellNum) {
 }
 
 void* Node::leafNodeValue(uint32_t cellNum) {
-    return static_cast<char*>(leafNodeCell(cellNum)) + LEAF_NODE_KEY_SIZE;
+    void* cellPtr = leafNodeCell(cellNum);
+    void* valuePtr = static_cast<char*>(cellPtr) + LEAF_NODE_KEY_SIZE;
+    return valuePtr;
 }
 
 void Node::initializeLeafNode() {

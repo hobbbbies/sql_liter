@@ -18,6 +18,6 @@ public:
     uint8_t* getPage(uint32_t page_num);
     uint32_t getFileLength() const;
     void pagerFlush(uint32_t pageNum);
-    void flushAllPages(uint32_t numRows, uint32_t rowSize); 
+    void flushAllPages(); 
     uint32_t getNumPages() const { return numPages; }
 };

@@ -20,7 +20,7 @@ Table::Table(std::string filename) {
 }
 
 Table::~Table() {     
-    pager->flushAllPages(num_rows, Row::getRowSize());
+    pager->flushAllPages();
     delete pager;
 }
 
@@ -38,6 +38,7 @@ void Table::insertRow(const Row& row) {
     // cursor will point to correct node AND cell position
     std::cout << "Executing internalNodefind for key: " << row.getId() << "\n";
     Cursor cursor(*this, row.getId());
+
     // then we create a node from the page data for node operations
     uint8_t* nodeData = getPageAddress(cursor.getPageNum());
     Node node(nodeData);
@@ -50,6 +51,7 @@ void Table::insertRow(const Row& row) {
     }
     
     // Check if we're inserting at a position with existing cells
+    // duplicate key check
     if (cursor.getCellNum() < numCells) {
         uint32_t keyAtPosition = *node.leafNodeKey(cursor.getCellNum());
         if (keyAtPosition == row.getId()) {
@@ -113,7 +115,6 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
         }
         uint32_t rowNum = static_cast<uint32_t>(std::stoul(tokens[1]));
         std::cout << "row num: " << rowNum << "\n";
-        std::cout << "num rows: " << num_rows << "\n";
         std::string username = tokens[2];
         std::string email = tokens[3];
 
@@ -149,10 +150,9 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
 //     }
 // }
 
-// TODO: Fix select on empty table
 ExecuteResult Table::execute_select_all() {
     try {
-        Cursor cursor(*this, 0);
+        Cursor cursor(*this);  // Use table start constructor
         if (cursor.isEndOfTable()) {
             std::cout << "No rows in table.\n";
             return ExecuteResult::EXECUTE_SUCCESS;
@@ -358,6 +358,26 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
     }
 }
 
-void Table::internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t oldNodePageNum) {
+void Table::internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t childPageNum) {
+    uint8_t* oldNodeData = getPageAddress(parentPageNum);
+    Node oldNode(oldNodeData);
+    uint32_t oldNodeMax = oldNode.getNodeMaxKey();
     
+    uint8_t* childNodedata = getPageAddress(childPageNum);
+    Node childNode(childNodedata);
+    uint32_t childNodeMax = childNode.getNodeMaxKey();
+    
+    uint32_t newPageNum = getUnusedPageNum();
+    uint8_t* newNodeData = getPageAddress(newPageNum);
+    Node newNode(newNodeData);
+    newNode.initializeInternalNode();
+
+    bool splittingRoot = oldNode.isRootNode();
+
+    if (splittingRoot) {
+        createNewRoot(newPageNum);
+    } else {
+        internalNodeInsert(parentPageNum, newPageNum);
+    }
+
 }

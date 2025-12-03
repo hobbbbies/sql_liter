@@ -13,6 +13,7 @@ private:
     bool endOfTable; 
 public:
     Cursor(Table& table, uint32_t key);
+    Cursor(Table& table);  // Constructor for table start
     ~Cursor();
     void* cursorSlot();
     void cursorAdvance();
@@ -22,4 +23,5 @@ public:
 private:
     void leafNodeFind(uint32_t key, uint32_t pageNum);
     void internalNodeFind(uint32_t key, uint32_t pageNum);
+    void findLeftmostLeaf(uint32_t pageNum);
 };

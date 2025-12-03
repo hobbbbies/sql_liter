@@ -16,6 +16,13 @@ Cursor::Cursor(Table& table, uint32_t key) : table(table), endOfTable(false) {
     }
 }
 
+// Constructor for table start - positions cursor at first cell of leftmost leaf
+Cursor::Cursor(Table& table) : table(table), cellNum(0), endOfTable(false) {
+    uint32_t rootPageNum = table.getRootPageNum();
+    findLeftmostLeaf(rootPageNum);
+
+}
+
 Cursor::~Cursor() {}
 
 // sets cursor to correct cell within given row (pageNum)
@@ -27,6 +34,7 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
     
     if (*node.leafNodeNumCells() == 0) {
         endOfTable = true;
+        this->cellNum = 0;
         return;
     }
 
@@ -36,7 +44,6 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
     while (minIndex < onePastMaxIndex) { 
         uint32_t currentIndex = (minIndex + onePastMaxIndex) / 2;
         uint32_t currentKey = *node.leafNodeKey(currentIndex);
-        std::cout << "current key: " << currentKey << "\n";
         if (currentKey == key) {
             this->cellNum = currentIndex;
             return;
@@ -46,13 +53,12 @@ void Cursor::leafNodeFind(uint32_t key, uint32_t pageNum) {
             onePastMaxIndex = currentIndex;
         }
     }
-    std::cout << "key not found, pointing to " << minIndex << "\n";
     // if key is not found, cellNum will point to its insertion position; follows BST property
     this->cellNum = minIndex;
 }
 
 void Cursor::internalNodeFind(uint32_t key, uint32_t pageNum) {
-    std::cout << "Executing internalNodefind for key: " << key << "\n";
+    this->pageNum = pageNum;
     // create node from pagNum
     uint8_t* nodeData = table.getPageAddress(pageNum);
     Node node(nodeData);
@@ -90,6 +96,7 @@ void Cursor::internalNodeFind(uint32_t key, uint32_t pageNum) {
 void* Cursor::cursorSlot() {
     uint8_t* nodeData = table.getPageAddress(pageNum); 
     Node node(nodeData);
+
     return node.leafNodeValue(cellNum);
 }
 
@@ -110,4 +117,25 @@ void Cursor::cursorAdvance() {
             endOfTable = false;
         }
     }
+}
+
+// Finds the leftmost leaf node starting from the given page
+void Cursor::findLeftmostLeaf(uint32_t startPageNum) {
+    uint8_t* nodeData = table.getPageAddress(startPageNum);
+    Node node(nodeData);
+    
+    // If it's a leaf, we're done
+    if (node.getNodeType() == NodeType::NODE_LEAF) {
+        pageNum = startPageNum;
+        // Check if table is empty
+        if (*node.leafNodeNumCells() == 0) {
+            endOfTable = true;
+        }
+
+        return;
+    }
+    
+    // If it's an internal node, follow the leftmost child
+    uint32_t childPageNum = *node.internalNodeChild(0);
+    findLeftmostLeaf(childPageNum);
 }
