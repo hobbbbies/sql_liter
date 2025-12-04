@@ -133,6 +133,7 @@ uint32_t* Node::internalNodeNumKeys() {
     return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + INTERNAL_NODE_NUM_KEYS_OFFSET);
 }
 
+// returns page of right child 
 uint32_t* Node::internalNodeRightChild() {
     return reinterpret_cast<uint32_t*>(static_cast<char*>(data) + INTERNAL_NODE_RIGHT_CHILD_OFFSET);
 }

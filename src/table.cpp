@@ -377,7 +377,58 @@ void Table::internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t childPag
     if (splittingRoot) {
         createNewRoot(newPageNum);
     } else {
-        internalNodeInsert(parentPageNum, newPageNum);
+        // insert in grandparent
+        internalNodeInsert(*oldNode.nodeParent(), newPageNum);
+    }
+    // create reference to grandparent 
+    uint8_t* grandparentData = getPageAddress(*oldNode.nodeParent());
+    Node grandparent(grandparentData);
+
+    // copy all keys to vector
+    std::vector<uint32_t> allKeys;
+    std::vector<uint32_t> allChildren;
+    /* 
+    fill out vector that contains all old keys
+    creates array of keys to be redistributed
+    */
+    uint32_t numExistingKeys = *oldNode.internalNodeNumKeys();
+    if (numExistingKeys != INTERNAL_NODE_MAX_KEYS) {
+        throw std::runtime_error("internalNodeSplitAndInsert called when node not full");
     }
 
+    for (uint32_t i = 0; i < numExistingKeys + 1; i++) {
+        // one more child than num keys 
+        if (i < numExistingKeys) {
+            uint32_t node_key = *oldNode.internalNodeKey(i);
+            allKeys.emplace_back(node_key);
+        }
+        
+        uint32_t child_page_num = *oldNode.internalNodeChild(i);        
+        allChildren.emplace_back(child_page_num);
+    }    
+
+    // insert new key to be added
+    for (uint32_t i = 0; i < (INTERNAL_NODE_MAX_KEYS / 2) - 1; i++) {
+        if (i == INTERNAL_NODE_MAX_KEYS / 2 - 1) {
+            *oldNode.internalNodeRightChild() = allKeys[INTERNAL_NODE_MAX_KEYS / 2];       
+            // update max key 
+            break;
+        }
+        *oldNode.internalNodeKey(i) = allKeys[i];
+        *oldNode.internalNodeChild(i) = allChildren[i];
+    }
+    // insert middle node into parent
+    uint32_t middleKey = allKeys[INTERNAL_NODE_MAX_KEYS / 2];
+    std::cout << "Middle key to be promoted: " << middleKey << "\n";
+    grandparent.internalNodeKey()
+
+
+    for (uint32_t i = 0; i < INTERNAL_NODE_MAX_KEYS / 2 - 1; i++) {
+        uint32_t globalIndex = INTERNAL_NODE_MAX_KEYS / 2 + i;
+        *newNode.internalNodeKey(i) = allKeys[globalIndex];
+    }
+    *newNode.internalNodeRightChild() = allKeys[INTERNAL_NODE_MAX_KEYS];
+
+    *oldNode.internalNodeNumKeys() = INTERNAL_NODE_MAX_KEYS / 2;
+    *newNode.internalNodeNumKeys() = INTERNAL_NODE_MAX_KEYS / 2;
 }
