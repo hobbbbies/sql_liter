@@ -358,8 +358,8 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
     }
 }
 
-void Table::internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t childPageNum) {
-    uint8_t* oldNodeData = getPageAddress(parentPageNum);
+void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNum) {
+    uint8_t* oldNodeData = getPageAddress(oldPageNum);
     Node oldNode(oldNodeData);
     uint32_t oldNodeMax = oldNode.getNodeMaxKey();
     
@@ -373,62 +373,88 @@ void Table::internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t childPag
     newNode.initializeInternalNode();
 
     bool splittingRoot = oldNode.isRootNode();
-
+    
+    uint8_t* grandparentData;
     if (splittingRoot) {
         createNewRoot(newPageNum);
+        grandparentData = getPageAddress(rootPageNum);
+        
+        // refetch old node and new node after root creation
+        uint32_t leftChildPageNum = *Node(grandparentData).internalNodeChild(0);
+        oldNodeData = getPageAddress(leftChildPageNum);
+        oldNode = Node(oldNodeData);
+        newNodeData = getPageAddress(newPageNum);
+        Node newNode(newNodeData);
     } else {
-        // insert in grandparent
-        internalNodeInsert(*oldNode.nodeParent(), newPageNum);
+        grandparentData = getPageAddress(*oldNode.nodeParent());
     }
     // create reference to grandparent 
-    uint8_t* grandparentData = getPageAddress(*oldNode.nodeParent());
     Node grandparent(grandparentData);
 
     // copy all keys to vector
     std::vector<uint32_t> allKeys;
     std::vector<uint32_t> allChildren;
-    /* 
-    fill out vector that contains all old keys
-    creates array of keys to be redistributed
-    */
     uint32_t numExistingKeys = *oldNode.internalNodeNumKeys();
     if (numExistingKeys != INTERNAL_NODE_MAX_KEYS) {
         throw std::runtime_error("internalNodeSplitAndInsert called when node not full");
     }
+    // populate vectors and insert new key/child 
+    for (uint32_t i = 0; i < numExistingKeys; i++) {
+        allKeys.push_back(*oldNode.internalNodeKey(i));
+        allChildren.push_back(*oldNode.internalNodeChild(i));
+    }
+    allChildren.push_back(*oldNode.internalNodeRightChild());
+    // insertion pos for new child 
+    uint32_t insertPos = 0;
+    while (insertPos < allKeys.size() && allKeys[insertPos] < childNodeMax) {
+        insertPos++;
+    }
+    allKeys.insert(allKeys.begin() + insertPos, childNodeMax);
+    allChildren.insert(allChildren.begin() + insertPos + 1, childPageNum);  
+    
+    uint32_t middleIndex = (INTERNAL_NODE_MAX_KEYS + 1) / 2;  // or allKeys.size() / 2
+    uint32_t middleKey = allKeys[middleIndex];
 
-    for (uint32_t i = 0; i < numExistingKeys + 1; i++) {
-        // one more child than num keys 
-        if (i < numExistingKeys) {
-            uint32_t node_key = *oldNode.internalNodeKey(i);
-            allKeys.emplace_back(node_key);
-        }
-        
-        uint32_t child_page_num = *oldNode.internalNodeChild(i);        
-        allChildren.emplace_back(child_page_num);
-    }    
-
-    // insert new key to be added
-    for (uint32_t i = 0; i < (INTERNAL_NODE_MAX_KEYS / 2) - 1; i++) {
-        if (i == INTERNAL_NODE_MAX_KEYS / 2 - 1) {
-            *oldNode.internalNodeRightChild() = allKeys[INTERNAL_NODE_MAX_KEYS / 2];       
-            // update max key 
-            break;
-        }
+    for (uint32_t i = 0; i < middleIndex - 1; i++) {
         *oldNode.internalNodeKey(i) = allKeys[i];
         *oldNode.internalNodeChild(i) = allChildren[i];
     }
-    // insert middle node into parent
-    uint32_t middleKey = allKeys[INTERNAL_NODE_MAX_KEYS / 2];
-    std::cout << "Middle key to be promoted: " << middleKey << "\n";
-    grandparent.internalNodeKey()
 
+    *oldNode.internalNodeRightChild() = allChildren[middleIndex - 1];
+    *oldNode.internalNodeNumKeys() = middleIndex - 1;
 
-    for (uint32_t i = 0; i < INTERNAL_NODE_MAX_KEYS / 2 - 1; i++) {
-        uint32_t globalIndex = INTERNAL_NODE_MAX_KEYS / 2 + i;
-        *newNode.internalNodeKey(i) = allKeys[globalIndex];
+    uint32_t newNodeKeyCount = allKeys.size() - middleIndex - 1;
+    for (uint32_t i = 0; i < newNodeKeyCount; i++) {
+        *newNode.internalNodeKey(i) = allKeys[middleIndex + 1 + i];
+        *newNode.internalNodeChild(i) = allChildren[middleIndex + 1 + i];
     }
-    *newNode.internalNodeRightChild() = allKeys[INTERNAL_NODE_MAX_KEYS];
 
-    *oldNode.internalNodeNumKeys() = INTERNAL_NODE_MAX_KEYS / 2;
-    *newNode.internalNodeNumKeys() = INTERNAL_NODE_MAX_KEYS / 2;
+    *newNode.internalNodeRightChild() = allChildren[allChildren.size() - 1];
+    *newNode.internalNodeNumKeys() = newNodeKeyCount;
+
+    // update child pointers for right child 
+    for (uint32_t i = 0; i <= newNodeKeyCount; i++) {
+        uint32_t movedChildPageNum = *newNode.internalNodeChild(i);
+        uint8_t* childData = getPageAddress(movedChildPageNum);
+        Node child(childData);
+        *child.nodeParent() = newPageNum;
+    }
+    
+    // Update child's parent pointer
+    uint8_t* insertedChildData = getPageAddress(childPageNum);
+    Node insertedChild(insertedChildData);
+    uint32_t insertedChildDest = (insertPos <= middleIndex) ? oldPageNum : newPageNum;
+    *insertedChild.nodeParent() = insertedChildDest;
+    
+    // Update parent with old node's new max key
+    uint8_t* parentData = getPageAddress(*oldNode.nodeParent());
+    Node parent(parentData);
+    parent.internalNodeUpdateMaxKey(oldPageNum, oldNode.getNodeMaxKey());
+    
+    // If not splitting root, insert new node into parent now
+    if (!splittingRoot) {
+        internalNodeInsert(*oldNode.nodeParent(), newPageNum);
+        *newNode.nodeParent() = *oldNode.nodeParent();
+    }
+
 }
