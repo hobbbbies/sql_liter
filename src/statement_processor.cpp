@@ -13,7 +13,6 @@ public:
 
     explicit Impl(Table& db_table) : table(db_table) {
         statements["insert"] = [this](const std::string& fullCommand) {
-            std::cout << "Full command: " << fullCommand << "\n";
             auto tokens = tokenize(fullCommand);
             if (tokens.size() >= 4) {
                 ExecuteResult result = table.execute_insert(tokens);
@@ -36,6 +35,26 @@ public:
 
         statements["select"] = [this](const std::string& fullCommand) {
             table.execute_select_all();
+            return PrepareResult::PREPARE_SUCCESS;
+        };
+
+        statements["insert_multiple"] = [this](const std::string& fullCommand) {
+            auto tokens = tokenize(fullCommand);
+            if (tokens.size() >= 5) {
+                ExecuteResult result = table.execute_insert_multiple(tokens);
+                if (result == ExecuteResult::EXECUTE_FAILURE) {
+                    return PrepareResult::PREPARE_INTERNAL_FAILURE;
+                } else if (result == ExecuteResult::EXECUTE_TABLE_FULL) {
+                    std::cout << "Table is full\n";
+                    return PrepareResult::PREPARE_INTERNAL_FAILURE;
+                } else if (result == ExecuteResult::EXECUTE_DUPLICATE_KEY) {
+                    std::cout << "Duplicate key error\n";
+                    return PrepareResult::PREPARE_INTERNAL_FAILURE;
+                }
+            } else {
+                std::cout << "exiting";
+                return PrepareResult::PREPARE_SYNTAX_ERROR;
+            }
             return PrepareResult::PREPARE_SUCCESS;
         };
     }

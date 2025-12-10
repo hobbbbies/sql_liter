@@ -47,7 +47,6 @@ void Table::insertRow(const Row& row) {
 
     if (numCells >= LEAF_NODE_MAX_CELLS) {
         leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), cursor.getPageNum()); 
-        return;   
     }
     
     // Check if we're inserting at a position with existing cells
@@ -56,6 +55,7 @@ void Table::insertRow(const Row& row) {
         uint32_t keyAtPosition = *node.leafNodeKey(cursor.getCellNum());
         if (keyAtPosition == row.getId()) {
             throw std::invalid_argument("Duplicate key");
+            return;
         }        
     } 
     
@@ -120,6 +120,32 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
 
         Row newRow(rowNum, username, email);
         insertRow(newRow);
+        return ExecuteResult::EXECUTE_SUCCESS;
+    } catch (const std::invalid_argument& e) {
+        std::cout << "Error: " << e.what() << "\n";
+        return ExecuteResult::EXECUTE_DUPLICATE_KEY;
+    } catch (const std::exception& e) {
+        std::cout << "Error parsing insert values: " << e.what() << "\n";
+        return ExecuteResult::EXECUTE_FAILURE;
+    }
+}
+
+ExecuteResult Table::execute_insert_multiple(const std::vector<std::string> tokens) {
+    if (tokens.size() < 5) {
+        return ExecuteResult::EXECUTE_FAILURE;
+    }
+    try {
+        uint32_t count = static_cast<uint32_t>(std::stoul(tokens[1]));
+        uint32_t startId = static_cast<uint32_t>(std::stoul(tokens[2]));
+        std::string username = tokens[3];
+        std::string email = tokens[4];
+
+        uint32_t max_attempts = 1000;
+        for (uint32_t i = 0; i < count; ++i) {
+            Row newRow(startId + i, username, email);
+            insertRow(newRow);
+        }
+
         return ExecuteResult::EXECUTE_SUCCESS;
     } catch (const std::invalid_argument& e) {
         std::cout << "Error: " << e.what() << "\n";
@@ -381,10 +407,11 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
         
         // refetch old node and new node after root creation
         uint32_t leftChildPageNum = *Node(grandparentData).internalNodeChild(0);
+        oldPageNum = leftChildPageNum;
         oldNodeData = getPageAddress(leftChildPageNum);
         oldNode = Node(oldNodeData);
         newNodeData = getPageAddress(newPageNum);
-        Node newNode(newNodeData);
+        newNode = Node(newNodeData);  // Reassign, don't redeclare
     } else {
         grandparentData = getPageAddress(*oldNode.nodeParent());
     }
@@ -415,12 +442,12 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
     uint32_t middleIndex = (INTERNAL_NODE_MAX_KEYS + 1) / 2;  // or allKeys.size() / 2
     uint32_t middleKey = allKeys[middleIndex];
 
-    for (uint32_t i = 0; i < middleIndex - 1; i++) {
+    for (uint32_t i = 0; i < middleIndex; i++) {
         *oldNode.internalNodeKey(i) = allKeys[i];
         *oldNode.internalNodeChild(i) = allChildren[i];
     }
 
-    *oldNode.internalNodeRightChild() = allChildren[middleIndex - 1];
+    *oldNode.internalNodeRightChild() = allChildren[middleIndex];
     *oldNode.internalNodeNumKeys() = middleIndex - 1;
 
     uint32_t newNodeKeyCount = allKeys.size() - middleIndex - 1;

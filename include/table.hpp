@@ -31,6 +31,7 @@ public:
     void internalNodeSplitAndInsert(uint32_t parentPageNum, uint32_t oldNodePageNum);
 
     ExecuteResult execute_insert(const std::vector<std::string> tokens);
+    ExecuteResult execute_insert_multiple(const std::vector<std::string> tokens);
     ExecuteResult execute_select_all();
     ExecuteResult execute_select(const std::vector<std::string>& tokens);
 };
