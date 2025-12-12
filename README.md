@@ -1,6 +1,6 @@
 # SQL Liter 
 
-A lightweight, from-scratch SQL database implementation in C++ featuring a B+ tree storage engine and interactive REPL interface.
+A lightweight, from-scratch SQL database implementation in C++ featuring a B+ tree storage engine and interactive REPL interface. Below is an article going into detail on the implementations and my experience attempting to make something like this for the first time.
 
 ## Background 
 
@@ -14,9 +14,11 @@ SQL Liter is a hands-on exploration of database internals, built entirely from s
      
   4. #### Sharpening my DSA skills <br>
        At the time of writing this, I just passed my Data Structures & Algorithms class at my university. While there was plently of workload, I wanted to find a more interesting way to           study instead of just reading textbooks. That's when I started reading about B-Trees in databases, and decided that if I could build one of those, the rest of my DSA class would be         a breeze.
+     
+# Key Features
 
-## The B-Tree
-Not to be confused with a binary tree, a B+ tree is a multi-way search tree designed specifically for storage systems. Each node can store many keys and child pointers, which drastically reduces tree depth.
+## The B Tree
+Not to be confused with a binary tree, a B+ tree (often just called a B tree) is a multi-way search tree designed specifically for storage systems. Each node can store many keys and child pointers, which drastically reduces tree depth.
 
 The defining characteristics of a B+ tree are:
 
@@ -37,7 +39,7 @@ But why not any other type of tree? Red Black Trees and AVL Trees are both self 
 #### 2. Keep the tree very shallow
 * Again, since each node is implemented as an entire page on the disk, and each page can typically hold 4KB, trees are built very wide, with hundreds of data cells per node, but remain shallow, typically only reaching a few levels of depth at in most use cases.
 
-#### B Tree Splitting
+### B Tree Splitting
 
 This was what I found to be the trickiest part. The main downside of implementing nodes that can hold many keys is that when nodes fill up to their capacity, something interesting happens: ***node splitting***
 
@@ -77,7 +79,7 @@ This is the main mechanism that keeps the tree balanced while allowing it to gro
 
 ## On-Disk Storage & Paging
 
-SQL Liter stores all B+ tree nodes directly as fixed-size pages on disk.
+SQL Liter stores all B+ tree nodes directly as fixed-size pages on disk. Conceptually, this was a very new approach to me, as up until now, all the data structures I've written have used memory layouts only. 
 
 - Each page is `PAGE_SIZE` bytes (4KB).
 - Every leaf/internal node occupies exactly one page.
@@ -117,6 +119,7 @@ Having tests made it much easier to refactor low-level code (node layout, pager 
 ### Supported Operations
 ```sql
 insert <id> <username> <email>
+insert_multiple <count> <id> <username> <email> // useful for testing node splitting
 select
 .exit    -- Meta-command to exit
 .btree   -- Meta-command to visualize B+ tree structure
@@ -127,7 +130,6 @@ select
 ### Requirements
 - C++17 compatible compiler
 - CMake 3.14+
-- Google Test (automatically fetched)
 
 ### Building
 ```bash
@@ -145,26 +147,6 @@ make
 ```bash
 ./sql_liter_tests
 ```
-
-## Technical Highlights
-
-### Systems Programming Skills
-- **Memory Management**: Manual memory allocation and deallocation patterns
-- **File I/O**: Direct file operations with proper error handling
-- **Data Structures**: Implementation of complex tree structures from scratch
-- **Performance**: Efficient algorithms for search, insertion, and storage
-
-### Software Engineering Practices
-- **Testing**: Comprehensive unit test suite with Google Test
-- **Architecture**: Clean, modular design with clear separation of concerns
-- **Documentation**: Well-commented code with clear interfaces
-- **Build System**: Modern CMake configuration with proper dependency management
-
-### Database Concepts Demonstrated
-- **Storage Engines**: Understanding of how databases store and retrieve data
-- **Indexing**: B+ tree implementation showing grasp of database optimization
-- **Concurrency**: Foundation for understanding database transaction systems
-- **Query Processing**: Parser and execution engine fundamentals
 
 ## Future Enhancements
 - Internal node support for larger datasets
