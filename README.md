@@ -2,11 +2,26 @@
 
 A lightweight, from-scratch SQL database implementation in C++ featuring a B+ tree storage engine and interactive REPL interface.
 
-## Overview
+## Background 
 
-SQL Liter is a hands-on exploration of database internals, built entirely from scratch to understand how databases actually work under the hood. No external database libraries - just pure C++ implementing everything from page management to B+ tree indexing. 🚀
+SQL Liter is a hands-on exploration of database internals, built entirely from scratch. It's something I built as a means to reach a few different goals: 
+
+  1. #### Learn C++ <br>
+       Prior to this project, my experience in C++ was limited to simple terminal executables and basic REPL interfaces. I chose this project as a way to dive into the deep end of C++             development, in a "all or nothing" approach.
+     
+  3. #### Learn Database Internals <br>
+       Databases have always been a "black box" to me, just sucking in my data and spitting it out. I recently picked up the well known guide on data-driven apps, "<i>Designing Data-Intensive Applications</i>" by Martin Kleppmann, and           it really opened my eyes into the implementations of real world databases. I had to try it out myself.
+     
+  4. #### Sharpening my DSA skills <br>
+       At the time of writing this, I just passed my Data Structures & Algorithms class at my university. While there was plently of workload, I wanted to find a more interesting way to           study instead of just reading textbooks. That's when I started reading about B-Trees in databases, and decided that if I could build one of those, the rest of my DSA class would be         a breeze.
+
+## The B-Tree
+
 
 ## Key Features
+
+
+### Disk Storage 
 
 ### 🌳 Storage Engine
 - **B+ Tree Implementation**: Efficient indexing with automatic node splitting and balancing
