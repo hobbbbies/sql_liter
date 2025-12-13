@@ -124,8 +124,9 @@ select
 .exit    -- Meta-command to exit
 .btree   -- Meta-command to visualize B+ tree structure
 ```
+---
 
-## Build & Test
+# Build & Test
 
 ### Requirements
 - C++17 compatible compiler
@@ -148,12 +149,6 @@ make
 ./sql_liter_tests
 ```
 
-## Future Enhancements
-- Internal node support for larger datasets
-- Additional SQL operations (UPDATE, DELETE, WHERE clauses)
-- Transaction support and concurrency control
-- Query optimization and execution planning
-
 ## Project Structure
 ```
 sql_liter/
@@ -163,3 +158,9 @@ sql_liter/
 ├── CMakeLists.txt # Build configuration
 └── README.md      # This file
 ```
+
+## Future Enhancements
+- Internal node support for larger datasets
+- Additional SQL operations (UPDATE, DELETE, WHERE clauses)
+- Transaction support and concurrency control
+- Query optimization and execution planning
