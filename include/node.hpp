@@ -2,6 +2,7 @@
 
 #include "constants.hpp"
 #include <cstdint>
+#include <string>
 #include "row.hpp"
 #include "enums.hpp"
 #include "table.hpp"
