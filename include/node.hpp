@@ -45,5 +45,5 @@ public:
 
     // print methods
     void indent(uint32_t level);
-    void printTree(Table& table, uint32_t rootPageNum, uint32_t indentationLevel = 0);
+    void printTree(Table& table, uint32_t rootPageNum, uint32_t indentationLevel = 0, const std::string& prefix = "", bool isLast = true);
 };

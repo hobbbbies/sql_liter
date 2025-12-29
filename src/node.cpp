@@ -143,7 +143,7 @@ uint32_t* Node::internalNodeCell(uint32_t cellNum) {
 }
 
 // returns pointer to child node cell
-uint32_t* Node::internalNodeChild(uint32_t childNum) {
+uint32_t* Node::∫(uint32_t childNum) {
     uint32_t numKeys = *internalNodeNumKeys();
     if (childNum > numKeys) {
         throw std::out_of_range("Tried to access child_num " + std::to_string(childNum) + " > num_keys " + std::to_string(numKeys));
