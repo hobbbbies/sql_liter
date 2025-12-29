@@ -5,13 +5,13 @@
             "name": "Debug C++",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/sql_liter_tests",
+            "program": "${workspaceFolder}/build/sql_liter",
             "args": ["test.db"],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceFolder}/build",
             "environment": [],
-            "externalConsole": false,
-            "MIMode": "lldb",  // For macOS
+            "externalConsole": true,
+            "MIMode": "lldb",
             "preLaunchTask": "build"
         },
         {

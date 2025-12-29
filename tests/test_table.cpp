@@ -229,7 +229,7 @@ TEST_F(TableTest, InternalNodeSplitWorks) {
     uint32_t key = LEAF_NODE_MAX_CELLS + 1;
     while (*rootNode.internalNodeNumKeys() < INTERNAL_NODE_MAX_KEYS) {
         // Insert enough keys to trigger a leaf split
-        for(uint32_t i = 0; i < LEAF_NODE_RIGHT_SPLIT_COUNT; i++) {
+        for(uint32_t i = 0; i < LEAF_NODE_RIGHT_SPLIT_COUNT + 2; i++) {
             table->insertRow(Row(key++, "test", "test@example.com"));
         }
     }

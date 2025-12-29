@@ -36,17 +36,23 @@ uint8_t* Table::getPageAddress(uint32_t pageNum) const{
 void Table::insertRow(const Row& row) {
     // should get insertion position for new node 
     // cursor will point to correct node AND cell position
-    std::cout << "Executing internalNodefind for key: " << row.getId() << "\n";
     Cursor cursor(*this, row.getId());
 
     // then we create a node from the page data for node operations
+    std::cout << "cursor page num before getPageAddress: " << cursor.getPageNum() << "\n";
     uint8_t* nodeData = getPageAddress(cursor.getPageNum());
     Node node(nodeData);
     // numCells will include the new node to be inserted 
     uint32_t numCells = *node.leafNodeNumCells();
 
     if (numCells >= LEAF_NODE_MAX_CELLS) {
-        leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), cursor.getPageNum()); 
+        std::cout << "--SPLITTING LEAF--\n";
+        try {
+            leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), cursor.getPageNum());     
+        } catch(const std::out_of_range& e) {
+            throw;
+        }
+        return;
     }
     
     // Check if we're inserting at a position with existing cells
@@ -98,13 +104,7 @@ Row Table::getRow(uint32_t key) {
 
 ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
     uint8_t* node_data = getPageAddress(rootPageNum);
-    Node node(node_data);
-    std::cout << "num cells: " << *node.leafNodeNumCells() << "\n";
-    // delete below soon 
-    // if (*node.leafNodeNumCells() == LEAF_NODE_MAX_CELLS) {
-    //     return ExecuteResult::EXECUTE_TABLE_FULL;
-    // }
-
+    Node node(node_data);    
     if (tokens.size() < 4) {
         return ExecuteResult::EXECUTE_FAILURE;
     }
@@ -124,6 +124,10 @@ ExecuteResult Table::execute_insert(const std::vector<std::string> tokens) {
     } catch (const std::invalid_argument& e) {
         std::cout << "Error: " << e.what() << "\n";
         return ExecuteResult::EXECUTE_DUPLICATE_KEY;
+    } catch (const std::out_of_range& e) {
+        std::cout << "Error: " << e.what() << "\n";
+        return ExecuteResult::EXECUTE_TABLE_FULL;
+
     } catch (const std::exception& e) {
         std::cout << "Error parsing insert values: " << e.what() << "\n";
         return ExecuteResult::EXECUTE_FAILURE;
@@ -210,7 +214,6 @@ uint32_t Table::getNumRows() const {
 }
 
 void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt, uint32_t oldNodePageNum) {
-    std::cout << "Executing leafNodeSplitAndInsert for key: " << key << "\n";
     // left node
     uint8_t* oldNodeData = getPageAddress(oldNodePageNum);
     Node oldNode(oldNodeData);
@@ -235,9 +238,6 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     // insert new cell
     allCells.emplace(allCells.begin() + cellNumToInsertAt, key, *value);
 
-    for (uint32_t i = 0; i < allCells.size(); i++) {
-        std::cout << "key: " << allCells[i].first << "\n";
-    }
     // fill left node
     for (uint32_t i = 0; i < LEAF_NODE_LEFT_SPLIT_COUNT; i++) {
         *oldNode.leafNodeKey(i) = allCells[i].first;
@@ -335,8 +335,8 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
 
     uint32_t numKeys = *parent.internalNodeNumKeys();
 
+    std::cout << "Inserting into internal node. Current num keys: " << numKeys << "\n";
     if (numKeys >= INTERNAL_NODE_MAX_KEYS) {
-        std::cout << "TODO: Split internal node\n";
         internalNodeSplitAndInsert(parentPageNum, childPageNum);
         return;
     }
@@ -385,6 +385,7 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
 }
 
 void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNum) {
+    std::cout << "--SPLITTING INTERNAL NODE--\n";
     uint8_t* oldNodeData = getPageAddress(oldPageNum);
     Node oldNode(oldNodeData);
     uint32_t oldNodeMax = oldNode.getNodeMaxKey();
@@ -397,8 +398,10 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
     uint8_t* newNodeData = getPageAddress(newPageNum);
     Node newNode(newNodeData);
     newNode.initializeInternalNode();
+    // old node parent is not set here
 
     bool splittingRoot = oldNode.isRootNode();
+    std::cout << "splittingRoot: " << splittingRoot << "\n";
     
     uint8_t* grandparentData;
     if (splittingRoot) {
