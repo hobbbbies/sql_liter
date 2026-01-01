@@ -210,15 +210,19 @@ TEST_F(TableTest, InternalNodeSplitWorks) {
     // Simple test: fill the root internal node to capacity, then insert one more
     // This should trigger internalNodeSplitAndInsert
     
+    std:: cout << "Filling to internal root\n";
     fillToInternalRoot();
+    std::cout << "Crashing after here\n";
     
     uint8_t* rootData = table->getPageAddress(table->getRootPageNum());
     Node rootNode(rootData);
     EXPECT_EQ(rootNode.getNodeType(), NodeType::NODE_INTERNAL);
     EXPECT_EQ(*rootNode.internalNodeNumKeys(), 1);
-    
+
+    std::cout << "Filling internal node to capacity\n";
     uint32_t nextKey = fillInternalNodeToCapacity();
-    
+    std::cout << "Filled internal node to capacity!\n";
+
     // Root should now be full
     EXPECT_EQ(*rootNode.internalNodeNumKeys(), INTERNAL_NODE_MAX_KEYS);
     

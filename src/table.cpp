@@ -335,8 +335,11 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
     std::cout << "Inserting into internal node. Current num keys: " << numKeys << "\n";
     if (numKeys >= INTERNAL_NODE_MAX_KEYS) {
         internalNodeSplitAndInsert(parentPageNum, childPageNum);
+        std::cout << "InternalNodeSplitAndInsert called\n";
         return;
     }
+
+    std::cout << "InternalNodeSplitAndInsert *NOT* called\n";
 
     // Get the right child to compare with
     uint32_t rightChildPageNum = *parent.internalNodeRightChild();
@@ -383,30 +386,36 @@ void Table::internalNodeInsert(uint32_t parentPageNum, uint32_t childPageNum) {
 
 void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNum) {
     std::cout << "--SPLITTING INTERNAL NODE--\n";
+    std::cout << "DEBUG: Starting internalNodeSplitAndInsert(oldPageNum=" << oldPageNum << ", childPageNum=" << childPageNum << ")\n";
+    
     // current internal
     uint8_t* oldNodeData = getPageAddress(oldPageNum);
     Node oldNode(oldNodeData);
     uint32_t oldNodeMax = oldNode.getNodeMaxKey();
+    std::cout << "DEBUG: Old node max key: " << oldNodeMax << "\n";
     
     // newest leaf node being inserted into internal
     uint8_t* childNodedata = getPageAddress(childPageNum);
     Node childNode(childNodedata);
     uint32_t childNodeMax = childNode.getNodeMaxKey();
+    std::cout << "DEBUG: Child node max key: " << childNodeMax << "\n";
     
     // New internal node to split with old internal node 
     // parent is not yet set here
     uint32_t newPageNum = getUnusedPageNum();
+    std::cout << "DEBUG: Allocated new page num: " << newPageNum << "\n";
     uint8_t* newNodeData = getPageAddress(newPageNum);
     Node newNode(newNodeData);
     newNode.initializeInternalNode();
 
     bool splittingRoot = oldNode.isRootNode();
-    std::cout << "splittingRoot: " << splittingRoot << "\n";
+    std::cout << "DEBUG: splittingRoot: " << splittingRoot << "\n";
 
     // copy all keys to vector
     std::vector<uint32_t> allKeys;
     std::vector<uint32_t> allChildren;
     uint32_t numExistingKeys = *oldNode.internalNodeNumKeys();
+    std::cout << "DEBUG: Number of existing keys: " << numExistingKeys << "\n";
     if (numExistingKeys != INTERNAL_NODE_MAX_KEYS) {
         throw std::runtime_error("internalNodeSplitAndInsert called when node not full");
     }
@@ -415,16 +424,22 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
         allKeys.push_back(*oldNode.internalNodeKey(i));
         allChildren.push_back(*oldNode.internalNodeChild(i));
     }
+    std::cout << "DBEUG: Past vector population loop\n";
     allChildren.push_back(*oldNode.internalNodeRightChild());
+    std::cout << "DEBUG: Collected " << allKeys.size() << " keys and " << allChildren.size() << " children\n";
+    
     // insertion pos for new child 
     uint32_t insertPos = 0;
     while (insertPos < allKeys.size() && allKeys[insertPos] < childNodeMax) {
         insertPos++;
     }
+    std::cout << "DEBUG: Insert position for new child: " << insertPos << "\n";
     allKeys.insert(allKeys.begin() + insertPos, childNodeMax);
     allChildren.insert(allChildren.begin() + insertPos + 1, childPageNum);  
+    std::cout << "DEBUG: After insertion: " << allKeys.size() << " keys and " << allChildren.size() << " children\n";
     
     uint32_t middleIndex = allKeys.size() / 2;
+    std::cout << "DEBUG: Middle index for split: " << middleIndex << "\n";
     // uint32_t middleKey = allKeys[middleIndex];
 
     for (uint32_t i = 0; i < middleIndex; i++) {
@@ -460,7 +475,7 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
     Node insertedChild(insertedChildData);
     uint32_t insertedChildDest = (insertPos <= middleIndex) ? oldPageNum : newPageNum;
     *insertedChild.nodeParent() = insertedChildDest;
-        
+     
     // If not splitting root, insert new node into parent now
     if (splittingRoot) {
         createNewRoot(newPageNum);

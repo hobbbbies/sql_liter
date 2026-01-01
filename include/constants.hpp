@@ -5,7 +5,7 @@
 // Shared constants
 constexpr uint32_t COLUMN_USERNAME_SIZE = 32;
 constexpr uint32_t COLUMN_EMAIL_SIZE = 255;
-constexpr uint32_t TABLE_MAX_PAGES = 10000;
+constexpr uint32_t TABLE_MAX_PAGES = 50000;
 constexpr uint32_t PAGE_SIZE = 4096;
 
 // Derived storage layout constants
@@ -64,9 +64,9 @@ constexpr uint32_t INTERNAL_NODE_CELL_SIZE = INTERNAL_NODE_CHILD_SIZE + INTERNAL
 
 
 constexpr uint32_t INTERNAL_NODE_SPACE_FOR_CELLS = PAGE_SIZE - INTERNAL_NODE_HEADER_SIZE; // 4096 -8 = 4082
-// constexpr uint32_t INTERNAL_NODE_MAX_KEYS = INTERNAL_NODE_SPACE_FOR_CELLS / INTERNAL_NODE_CELL_SIZE; // 4082 / 8 = 510
-// constexpr uint32_t INTERNAL_NODE_MAX_CHILDREN = INTERNAL_NODE_MAX_KEYS + 1; // 511 
-constexpr uint32_t INTERNAL_NODE_MAX_KEYS = 8; // for testing
-constexpr uint32_t INTERNAL_NODE_MAX_CHILDREN = INTERNAL_NODE_MAX_KEYS + 1; //
+constexpr uint32_t INTERNAL_NODE_MAX_KEYS = INTERNAL_NODE_SPACE_FOR_CELLS / INTERNAL_NODE_CELL_SIZE; // 4082 / 8 = 510
+constexpr uint32_t INTERNAL_NODE_MAX_CHILDREN = INTERNAL_NODE_MAX_KEYS + 1; // 511 
+// constexpr uint32_t INTERNAL_NODE_MAX_KEYS = 8; // for testing
+// constexpr uint32_t INTERNAL_NODE_MAX_CHILDREN = INTERNAL_NODE_MAX_KEYS + 1; //
 
 constexpr uint32_t INVALID_PAGE_NUM = UINT32_MAX;
