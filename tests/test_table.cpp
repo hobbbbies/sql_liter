@@ -3,6 +3,7 @@
 #include "row.hpp"
 #include <cstdio>
 #include "node.hpp"
+#include "tokenizer.hpp"
 
 class TableTest : public ::testing::Test {
 protected:
@@ -20,7 +21,7 @@ protected:
     void fillToInternalRoot() {
         for(uint32_t i = 0; i < LEAF_NODE_MAX_CELLS + 1; i++) {
             std::string token = "insert " + std::to_string(i) + " " + std::to_string(i) + " " + std::to_string(i);
-            table->execute_insert(token);
+            table->execute_insert(tokenize(token));
         }
     }
     

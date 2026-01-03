@@ -221,22 +221,28 @@ uint32_t Table::getNumRows() const {
 }
 
 void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cellNumToInsertAt, uint32_t oldNodePageNum) {
+    std::cout << "--SPLITTING LEAF--\n";
+    std::cout << "DEBUG: Starting leafNodeSplitAndInsert(key=" << key << ", cellNumToInsertAt=" << cellNumToInsertAt << ", oldNodePageNum=" << oldNodePageNum << ")\n";
+    
     // left node
     uint8_t* oldNodeData = getPageAddress(oldNodePageNum);
     Node oldNode(oldNodeData);
     // uint32_t oldNodeMax = oldNode.getNodeMaxKey();
     // right node 
     uint32_t newPageNum = getUnusedPageNum();
+    std::cout << "DEBUG: Allocated new page num: " << newPageNum << "\n";
     uint8_t* newNodeData = getPageAddress(newPageNum);
     Node newNode(newNodeData);
     newNode.initializeLeafNode();
     *newNode.nodeParent() = *oldNode.nodeParent();
+    std::cout << "DEBUG: Parent page num: " << *oldNode.nodeParent() << "\n";
 
     // copy all cells to vector (holds key value pair)
     std::vector<std::pair<uint32_t, Row>> allCells;
 
     // fill out vector
     uint32_t numExistingCells = *oldNode.leafNodeNumCells();
+    std::cout << "DEBUG: Number of existing cells: " << numExistingCells << "\n";
     for (uint32_t i = 0; i < numExistingCells; i++) {
         uint32_t node_key = *oldNode.leafNodeKey(i);
         Row node_row = Row::deserialize(oldNode.leafNodeValue(i));
@@ -244,14 +250,17 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     }
     // insert new cell
     allCells.emplace(allCells.begin() + cellNumToInsertAt, key, *value);
+    std::cout << "DEBUG: Total cells after insertion: " << allCells.size() << "\n";
 
     // fill left node
+    std::cout << "DEBUG: Filling left node with " << LEAF_NODE_LEFT_SPLIT_COUNT << " cells\n";
     for (uint32_t i = 0; i < LEAF_NODE_LEFT_SPLIT_COUNT; i++) {
         *oldNode.leafNodeKey(i) = allCells[i].first;
         allCells[i].second.serialize(oldNode.leafNodeValue(i));
     } 
 
     // fill right node
+    std::cout << "DEBUG: Filling right node with " << LEAF_NODE_RIGHT_SPLIT_COUNT << " cells\n";
     for (uint32_t i = 0; i < LEAF_NODE_RIGHT_SPLIT_COUNT; i++) {
         uint32_t globalIndex = LEAF_NODE_LEFT_SPLIT_COUNT + i;
         *newNode.leafNodeKey(i) = allCells[globalIndex].first;
@@ -263,20 +272,25 @@ void Table::leafNodeSplitAndInsert(uint32_t key, const Row* value, uint32_t cell
     *newNode.leafNodeNumCells() = LEAF_NODE_RIGHT_SPLIT_COUNT;
     *newNode.leafNodeRightSibling() = *oldNode.leafNodeRightSibling();      
     *oldNode.leafNodeRightSibling() = newPageNum;
+    std::cout << "DEBUG: Old node max key: " << oldNode.getNodeMaxKey() << ", New node max key: " << newNode.getNodeMaxKey() << "\n";
 
     if (oldNode.isRootNode()) {
+        std::cout << "DEBUG: Old node is root, creating new root\n";
         return createNewRoot(newPageNum);
     } else {
+        std::cout << "DEBUG: Old node is not root, inserting into parent\n";
         // reassign parent pointer to new max of node 
         uint32_t parentPageNum = *oldNode.nodeParent();
         uint32_t newNodeMax = oldNode.getNodeMaxKey();        
         uint8_t* parentData = getPageAddress(parentPageNum);
         Node parent(parentData);
 
-        std::cout << "Updating max key to " << newNodeMax << "\n";
+        std::cout << "DEBUG: Updating parent max key for page " << oldNodePageNum << " to " << newNodeMax << "\n";
         parent.internalNodeUpdateMaxKey(oldNodePageNum, newNodeMax);
+        std::cout << "DEBUG: Inserting new page " << newPageNum << " into parent page " << parentPageNum << "\n";
         internalNodeInsert(parentPageNum, newPageNum);
     }
+    std::cout << "DEBUG: leafNodeSplitAndInsert complete\n";
 }
 
 // Creates new root (after allocating and splitting to right node)
@@ -409,11 +423,17 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
     
     // New internal node to split with old internal node 
     // parent is not yet set here
+
+    // DEBUGGING: Why is getUnusedPageNum() not incrementing num pages?
+    // ---------------
     uint32_t newPageNum = getUnusedPageNum();
     std::cout << "DEBUG: Allocated new page num: " << newPageNum << "\n";
     uint8_t* newNodeData = getPageAddress(newPageNum);
+    std::cout << "DEBUG: Retrieved new node data pointer\n";
     Node newNode(newNodeData);
     newNode.initializeInternalNode();
+    std::cout << "DEBUG: Initialized new internal node\n";
+    // ---------------
 
     bool splittingRoot = oldNode.isRootNode();
     std::cout << "DEBUG: splittingRoot: " << splittingRoot << "\n";
@@ -429,7 +449,6 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
     // populate vectors and insert new key/child "
     for (uint32_t i = 0; i < numExistingKeys; i++) {
         std::cout << "DEGUG: Collecting key " << i << ": " << *oldNode.internalNodeKey(i) << "\n";
-
         // CRASH OCCURS ON THIS DEREFERENCE
         allKeys.push_back(*oldNode.internalNodeKey(i));
         // std::cout << "DEBUG: Inbetween allKeys and allChildren population\n";

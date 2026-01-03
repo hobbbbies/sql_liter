@@ -32,7 +32,7 @@ Pager::Pager(const std::string& filename) {
         exit(EXIT_FAILURE);
     }
     
-    for (int i = 0; i < TABLE_MAX_PAGES; i++) {
+    for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++) {
         pages[i] = nullptr;    
     } 
 }
@@ -42,7 +42,7 @@ Pager::~Pager() {
         fileDescriptor.close();
     }
 
-    for (int i = 0; i < TABLE_MAX_PAGES; i++) {
+    for (uint32_t i = 0; i < TABLE_MAX_PAGES; i++) {
        delete[] pages[i];
     }
 }
