@@ -39,7 +39,12 @@ void Table::insertRow(const Row& row) {
     Cursor cursor(*this, row.getId());
 
     // then we create a node from the page data for node operations
+    
+    // DEBUGGING: this is running twice???
+    // ---------------
     std::cout << "cursor page num before getPageAddress: " << cursor.getPageNum() << "\n";
+    // ---------------
+    
     uint8_t* nodeData = getPageAddress(cursor.getPageNum());
     Node node(nodeData);
     // numCells will include the new node to be inserted 
@@ -48,7 +53,9 @@ void Table::insertRow(const Row& row) {
     if (numCells >= LEAF_NODE_MAX_CELLS) {
         std::cout << "--SPLITTING LEAF--\n";
         try {
+            std::cout << "DEBUG: before split call\n";
             leafNodeSplitAndInsert(row.getId(), &row, cursor.getCellNum(), cursor.getPageNum());     
+            std::cout << "DEBUG: after split call\n";
         } catch(const std::out_of_range& e) {
             throw;
         }
@@ -419,9 +426,13 @@ void Table::internalNodeSplitAndInsert(uint32_t oldPageNum, uint32_t childPageNu
     if (numExistingKeys != INTERNAL_NODE_MAX_KEYS) {
         throw std::runtime_error("internalNodeSplitAndInsert called when node not full");
     }
-    // populate vectors and insert new key/child 
+    // populate vectors and insert new key/child "
     for (uint32_t i = 0; i < numExistingKeys; i++) {
+        std::cout << "DEGUG: Collecting key " << i << ": " << *oldNode.internalNodeKey(i) << "\n";
+
+        // CRASH OCCURS ON THIS DEREFERENCE
         allKeys.push_back(*oldNode.internalNodeKey(i));
+        // std::cout << "DEBUG: Inbetween allKeys and allChildren population\n";
         allChildren.push_back(*oldNode.internalNodeChild(i));
     }
     std::cout << "DBEUG: Past vector population loop\n";
